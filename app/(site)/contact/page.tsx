@@ -11,29 +11,39 @@ export default function ContactPage() {
     setIsSubmitting(true);
     setStatus('');
     const form = event.currentTarget;
-    const response = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.fromEntries(new FormData(form))),
-    });
-    const result = await response.json();
-    setStatus(result.message || result.error);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      const result = await response.json();
+      setStatus(result.message || result.error || 'Something went wrong. Please try again.');
+      if (response.ok) form.reset();
+    } catch {
+      setStatus('We could not send your message. Please try again or email us directly.');
+    }
     setIsSubmitting(false);
-    if (response.ok) form.reset();
   }
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold mb-8">Get In Touch</h1>
-      <div className="max-w-2xl">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div><label htmlFor="name" className="block text-lg font-semibold mb-2">Name</label><input type="text" id="name" name="name" required className="w-full px-4 py-2 border border-[var(--ink)]/20 bg-[var(--paper)] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--acid)]" placeholder="Your name" /></div>
-          <div><label htmlFor="email" className="block text-lg font-semibold mb-2">Email</label><input type="email" id="email" name="email" required className="w-full px-4 py-2 border border-[var(--ink)]/20 bg-[var(--paper)] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--acid)]" placeholder="your@email.com" /></div>
-          <div><label htmlFor="message" className="block text-lg font-semibold mb-2">Message</label><textarea id="message" name="message" required rows={5} className="w-full px-4 py-2 border border-[var(--ink)]/20 bg-[var(--paper)] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--acid)]" placeholder="Tell us about your project" /></div>
-          <button type="submit" disabled={isSubmitting} className="bg-[var(--ink)] text-[var(--paper)] px-8 py-3 hover:bg-[var(--acid)] hover:text-[var(--ink)] transition">{isSubmitting ? 'Sending...' : 'Send Message'}</button>
-          {status ? <p role="status" className="text-muted">{status}</p> : null}
+    <main className="contact-page">
+      <section className="contact-intro site-container">
+        <p className="eyebrow">Start a conversation</p>
+        <h1>Let&apos;s make your<br /><em>next move clear.</em></h1>
+        <p className="contact-lead">Tell us what you are building, where you are stuck, or what you want people to remember. We&apos;ll help you find the clearest next step.</p>
+      </section>
+      <section className="contact-form-section site-container">
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <div className="contact-form-row">
+            <div className="contact-field"><label htmlFor="name">Name</label><input type="text" id="name" name="name" required placeholder="Your name" /></div>
+            <div className="contact-field"><label htmlFor="email">Email</label><input type="email" id="email" name="email" required placeholder="you@example.com" /></div>
+          </div>
+          <div className="contact-field"><label htmlFor="message">What can we help you make?</label><textarea id="message" name="message" required rows={7} placeholder="Tell us about your project, timeline, and what success should look like." /></div>
+          <div className="contact-form-footer"><p>We usually reply within one working day.</p><button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Sending...' : 'Send message'} <span aria-hidden="true">↗</span></button></div>
+          {status ? <p className="contact-status" role="status">{status}</p> : null}
         </form>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
