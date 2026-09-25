@@ -17,11 +17,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Contact submissions are not configured yet.' }, { status: 503 });
   }
 
-  const payload = await getPayload({ config });
-  await payload.create({
-    collection: 'contact-submissions',
-    data: { name, email, message },
-  });
+  try {
+    const payload = await getPayload({ config });
+    await Promise.race([
+      payload.create({
+        collection: 'contact-submissions',
+        data: { name, email, message },
+      }),
+      new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Contact submission timed out')), 1500);
+      }),
+    ]);
+  } catch {
+    return NextResponse.json({ error: 'We could not send your message right now. Please try again or email us directly.' }, { status: 503 });
+  }
 
   return NextResponse.json({ message: 'Thanks. We will be in touch soon.' });
 }
