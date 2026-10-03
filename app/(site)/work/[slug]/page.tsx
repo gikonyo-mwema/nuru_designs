@@ -1,26 +1,25 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
+import { RichText } from '@payloadcms/richtext-lexical/react';
+import { cache } from 'react';
 
 import config from '@payload-config';
+import { siteUrl } from '@/lib/site-url';
 
 type Media = {
   url?: string;
   alt?: string;
-};
-
-type RichTextNode = {
-  type?: string;
-  text?: string;
-  children?: RichTextNode[];
-  format?: number | string;
+  focalX?: number | null;
+  focalY?: number | null;
 };
 
 type Project = {
   title: string;
   description: string;
-  content: { root?: RichTextNode };
+  content: Parameters<typeof RichText>[0]['data'];
   heroImage: string | Media;
   gallery?: { image: string | Media; caption?: string }[];
   services?: { service: string }[];
@@ -28,7 +27,7 @@ type Project = {
   year?: number;
 };
 
-async function getProject(slug: string): Promise<Project | null> {
+const getProject = cache(async (slug: string): Promise<Project | null> => {
   if (!process.env.DATABASE_URI) {
     return null;
   }
@@ -36,38 +35,54 @@ async function getProject(slug: string): Promise<Project | null> {
   const payload = await getPayload({ config });
   const result = await payload.find({
     collection: 'projects',
-    where: { slug: { equals: slug } },
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        { status: { equals: 'published' } },
+      ],
+    },
     limit: 1,
   });
 
   return (result.docs[0] as unknown as Project | undefined) ?? null;
-}
+});
 
-function renderRichText(node: RichTextNode): React.ReactNode {
-  if (node.text) {
-    return node.text;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = await getProject(slug);
+
+  if (!project) {
+    return {
+      title: 'Project not found | Nuru Designs',
+      robots: { index: false, follow: false },
+    };
   }
 
-  const children = node.children?.map((child, index) => (
-    <span key={index}>{renderRichText(child)}</span>
-  ));
+  const heroImage = typeof project.heroImage === 'object' ? project.heroImage : null;
+  const url = new URL(`/work/${slug}`, siteUrl).toString();
 
-  switch (node.type) {
-    case 'heading':
-      return <h2 className="mt-10 mb-4 text-2xl font-bold">{children}</h2>;
-    case 'ul':
-      return <ul className="my-4 list-disc space-y-2 pl-6">{children}</ul>;
-    case 'ol':
-      return <ol className="my-4 list-decimal space-y-2 pl-6">{children}</ol>;
-    case 'listitem':
-      return <li>{children}</li>;
-    case 'linebreak':
-      return <br />;
-    case 'paragraph':
-      return <p className="my-4 leading-7 text-muted">{children}</p>;
-    default:
-      return children;
-  }
+  return {
+    title: `${project.title} | Nuru Designs`,
+    description: project.description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      title: project.title,
+      description: project.description,
+      url,
+      images: heroImage?.url ? [{ url: heroImage.url, alt: heroImage.alt || project.title }] : undefined,
+    },
+    twitter: {
+      card: heroImage?.url ? 'summary_large_image' : 'summary',
+      title: project.title,
+      description: project.description,
+      images: heroImage?.url ? [heroImage.url] : undefined,
+    },
+  };
 }
 
 export default async function ProjectPage({
@@ -83,17 +98,14 @@ export default async function ProjectPage({
   }
 
   const heroImage = typeof project.heroImage === 'object' ? project.heroImage : null;
-  const content = project.content?.root?.children ?? [];
 
   return (
-    <article className="container mx-auto px-4 py-16">
-      <Link href="/work" className="text-sm text-muted hover:text-(--ink)">
-        Back to work
-      </Link>
-      <header className="mt-8 max-w-3xl">
-        <h1 className="text-5xl font-bold">{project.title}</h1>
-        <p className="mt-6 text-xl leading-8 text-muted">{project.description}</p>
-        <div className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-sm text-muted">
+    <article className="project-detail site-container">
+      <Link href="/work" className="project-detail-back">Back to work</Link>
+      <header className="project-detail-header">
+        <h1>{project.title}</h1>
+        <p className="project-detail-description">{project.description}</p>
+        <div className="project-detail-meta">
           {project.client ? <span>Client: {project.client}</span> : null}
           {project.year ? <span>{project.year}</span> : null}
           {project.services?.map(({ service }) => <span key={service}>{service}</span>)}
@@ -101,23 +113,36 @@ export default async function ProjectPage({
       </header>
 
       {heroImage?.url ? (
-        <div className="relative mt-12 aspect-video overflow-hidden bg-(--paper)">
-          <Image src={heroImage.url} alt={heroImage.alt || project.title} fill className="object-cover" priority />
+        <div className="project-detail-hero">
+          <Image
+            src={heroImage.url}
+            alt={heroImage.alt || project.title}
+            fill
+            className="object-cover"
+            style={{ objectPosition: heroImage.focalX != null && heroImage.focalY != null ? `${heroImage.focalX}% ${heroImage.focalY}%` : undefined }}
+            priority
+          />
         </div>
       ) : null}
 
-      <div className="mx-auto mt-12 max-w-3xl">{content.map((node, index) => <div key={index}>{renderRichText(node)}</div>)}</div>
+      <RichText data={project.content} className="project-detail-content" />
 
       {project.gallery?.length ? (
-        <div className="mt-16 grid gap-8 md:grid-cols-2">
+        <div className="project-detail-gallery">
           {project.gallery.map(({ image, caption }, index) => {
             const media = typeof image === 'object' ? image : null;
             return media?.url ? (
               <figure key={`${media.url}-${index}`}>
-                <div className="relative aspect-4/3 overflow-hidden bg-(--paper)">
-                  <Image src={media.url} alt={media.alt || caption || project.title} fill className="object-cover" />
+                <div className="project-detail-gallery-image">
+                  <Image
+                    src={media.url}
+                    alt={media.alt || caption || project.title}
+                    fill
+                    className="object-cover"
+                    style={{ objectPosition: media.focalX != null && media.focalY != null ? `${media.focalX}% ${media.focalY}%` : undefined }}
+                  />
                 </div>
-                {caption ? <figcaption className="mt-2 text-sm text-muted">{caption}</figcaption> : null}
+                {caption ? <figcaption>{caption}</figcaption> : null}
               </figure>
             ) : null;
           })}

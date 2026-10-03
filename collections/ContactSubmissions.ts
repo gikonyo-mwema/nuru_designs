@@ -2,20 +2,62 @@ import type { CollectionConfig } from 'payload';
 
 const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
+  defaultSort: '-createdAt',
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['name', 'email', 'createdAt'],
+    group: 'Enquiries',
+    description: 'Messages from prospective and current clients.',
+    defaultColumns: ['name', 'email', 'status', 'followUpAt', 'createdAt'],
   },
   access: {
     read: ({ req: { user } }) => Boolean(user),
-    create: () => true,
+    // Public submissions go through /api/contact, which creates records server-side.
+    create: ({ req: { user } }) => Boolean(user),
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
   },
   fields: [
-    { name: 'name', type: 'text', required: true },
-    { name: 'email', type: 'email', required: true },
-    { name: 'message', type: 'textarea', required: true },
+    { name: 'name', type: 'text', required: true, admin: { readOnly: true } },
+    { name: 'email', type: 'email', required: true, admin: { readOnly: true } },
+    { name: 'message', type: 'textarea', required: true, admin: { readOnly: true } },
+    {
+      name: 'status',
+      type: 'select',
+      required: true,
+      defaultValue: 'new',
+      options: [
+        { label: 'New', value: 'new' },
+        { label: 'Contacted', value: 'contacted' },
+        { label: 'Qualified', value: 'qualified' },
+        { label: 'Closed', value: 'closed' },
+        { label: 'Spam', value: 'spam' },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'notes',
+      type: 'textarea',
+      admin: {
+        description: 'Internal notes only. These are never shown to the sender.',
+      },
+    },
+    {
+      name: 'assignedTo',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'followUpAt',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+      },
+    },
   ],
 };
 

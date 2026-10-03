@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { projectCategories, type ProjectCategory } from '@/lib/project-categories';
 
 type Project = {
   id: string;
@@ -10,21 +11,17 @@ type Project = {
   slug: string;
   description?: string;
   category?: string;
-  heroImage?: string | { url?: string; alt?: string };
+  heroImage?: string | { url?: string; alt?: string; focalX?: number | null; focalY?: number | null };
 };
 
+const featuredCategories: readonly ProjectCategory[] = ['brand-identity', 'posters', 'campaigns'];
 const tabs = [
   { value: 'all', label: 'All work' },
-  { value: 'brand-identity', label: 'Logos' },
-  { value: 'posters', label: 'Events' },
-  { value: 'campaigns', label: 'Campaigns' },
-] as const;
-
-const categoryLabels: Record<string, string> = {
-  'brand-identity': 'Brand identity / Logo',
-  posters: 'Event poster',
-  campaigns: 'Campaign design',
-};
+  ...projectCategories
+    .filter(([value]) => featuredCategories.includes(value))
+    .map(([value, label]) => ({ value, label })),
+];
+const categoryLabels = Object.fromEntries(projectCategories);
 
 export default function SelectedWorkGallery({ projects }: { projects: Project[] }) {
   const [activeTab, setActiveTab] = useState('all');
@@ -34,13 +31,12 @@ export default function SelectedWorkGallery({ projects }: { projects: Project[] 
 
   return (
     <>
-      <div className="work-tabs" role="tablist" aria-label="Filter selected work">
+      <div className="work-tabs" role="group" aria-label="Filter selected work">
         {tabs.map((tab) => (
           <button
             key={tab.value}
             type="button"
-            role="tab"
-            aria-selected={activeTab === tab.value}
+            aria-pressed={activeTab === tab.value}
             className={activeTab === tab.value ? 'is-active' : ''}
             onClick={() => setActiveTab(tab.value)}
           >
@@ -54,11 +50,11 @@ export default function SelectedWorkGallery({ projects }: { projects: Project[] 
             const image = typeof project.heroImage === 'object' ? project.heroImage : null;
 
             return (
-              <Link href={project.category ? `/work?category=${project.category}` : '/work'} key={project.id} className="project-card">
+              <Link href={`/work/${project.slug}`} key={project.id} className="project-card" aria-label={`View ${project.title}`}>
                 <div className="project-image">
-                  {image?.url ? <Image src={image.url} alt={image.alt || project.title} fill className="object-cover" /> : <div className="project-placeholder">N</div>}
+                  {image?.url ? <Image src={image.url} alt={image.alt || project.title} fill className="object-cover" style={{ objectPosition: image.focalX != null && image.focalY != null ? `${image.focalX}% ${image.focalY}%` : undefined }} /> : <div className="project-placeholder">N</div>}
                   <span className="project-overlay">
-                    <span className="project-overlay-type">{categoryLabels[project.category || ''] || 'Business card'}</span>
+                    <span className="project-overlay-type">{categoryLabels[project.category || ''] || 'Design project'}</span>
                     <span className="project-overlay-link">View more <span aria-hidden="true">↗</span></span>
                   </span>
                 </div>

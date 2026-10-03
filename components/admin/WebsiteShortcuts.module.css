@@ -1,0 +1,117 @@
+.panel {
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+  min-width: 0;
+  padding: 1rem 0.75rem;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 4px;
+  background: var(--theme-elevation-0);
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  padding: 0 0.65rem;
+  color: var(--theme-elevation-600);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.groupLabel {
+  margin: 0.85rem 0 0.25rem;
+  padding: 0 0.65rem;
+  color: var(--theme-elevation-500);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.groupLabel:first-child {
+  margin-top: 0;
+}
+
+.link {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border-radius: 3px;
+  color: var(--theme-text);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  background: var(--theme-elevation-100);
+  color: var(--theme-text);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--theme-elevation-500);
+  outline-offset: 1px;
+}
+
+.link svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+  color: var(--theme-elevation-700);
+}
+
+@media (min-width: 1000px) {
+  :global(.gutter.dashboard) {
+    display: grid;
+    grid-template-columns: minmax(190px, 230px) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 999px) {
+  .panel {
+    position: static;
+    padding: 0.8rem;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .groupLabel {
+    width: 100%;
+    margin: 0.55rem 0 0.1rem;
+  }
+
+  .link {
+    padding: 0.55rem;
+    border: 1px solid var(--theme-elevation-150);
+  }
+}
+
+@media (max-width: 520px) {
+  .nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .groupLabel {
+    grid-column: 1 / -1;
+  }
+}

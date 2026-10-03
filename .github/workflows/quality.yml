@@ -27,3 +27,13 @@ jobs:
 
       - name: Typecheck and lint
         run: npm run check
+
+      - name: Production build
+        run: npm run build
+        env:
+          DATABASE_URI: ''
+          PAYLOAD_SECRET: ci-only-payload-secret-not-valid-for-deployment
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ci-placeholder
+          CLOUDINARY_API_KEY: ci-placeholder
+          CLOUDINARY_API_SECRET: ci-placeholder
+          NEXT_PUBLIC_SITE_URL: https://nuru-designs.example

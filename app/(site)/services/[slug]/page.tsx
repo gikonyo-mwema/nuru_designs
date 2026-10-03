@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getService, services } from '@/lib/services';
+import { getPublicService, services } from '@/lib/services';
 
 type ServicePageProps = { params: Promise<{ slug: string }> };
 
@@ -11,13 +11,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getPublicService(slug);
   return service ? { title: `${service.title} — Nuru Designs`, description: service.shortDescription } : {};
 }
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getPublicService(slug);
   if (!service) notFound();
 
   return (
@@ -54,16 +54,14 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
       </section>
 
       <section className="service-detail-section service-samples-section">
-        <div className="site-container"><div className="section-heading"><div><p className="eyebrow">Portfolio samples</p><h2>Work made to move people.</h2></div></div><div className="service-samples-grid">{service.samples.map((sample) => <article className="service-sample" key={sample.title}><div className="service-sample-image" style={{ backgroundImage: `url(${sample.image})` }} role="img" aria-label={sample.title} /><h3>{sample.title}</h3><p>{sample.caption}</p></article>)}</div></div>
+        <div className="site-container"><div className="section-heading"><div><p className="eyebrow">Creative directions</p><h2>Possible ways your project could take shape.</h2><p>Illustrative concepts, not commissioned client projects.</p></div></div><div className="service-samples-grid">{service.samples.map((sample) => <article className="service-sample" key={sample.title}><div className="service-sample-image" style={{ backgroundImage: `url(${sample.image})` }} role="img" aria-label={`${sample.title}: ${sample.caption}`} /><h3>{sample.title}</h3><p>{sample.caption}</p></article>)}</div></div>
       </section>
 
       <section className="service-detail-section site-container"><div className="section-heading"><div><p className="eyebrow">Pricing / packages</p><h2>A right-sized way to get started.</h2></div></div><div className="service-packages">{service.packages.map((pkg) => <article className={`service-package${pkg.featured ? ' is-featured' : ''}`} key={pkg.name}>{pkg.featured && <span className="package-badge">Most popular</span>}<h3>{pkg.name}</h3><strong>{pkg.price}</strong><p>{pkg.description}</p><Link href="/contact" className="text-link">Choose package <span aria-hidden="true">→</span></Link></article>)}</div></section>
 
-      <section className="service-detail-section service-testimonials-section"><div className="site-container"><p className="eyebrow">Client perspective</p><div className="testimonials-grid">{service.testimonials.map((quote) => <blockquote key={quote}>{quote}</blockquote>)}</div></div></section>
-
       <section className="service-detail-section site-container service-faq"><div className="service-detail-split"><div><p className="eyebrow">FAQ</p><h2>Good questions deserve clear answers.</h2></div><div className="faq-list">{service.faqs.map((faq) => <details key={faq.question}><summary>{faq.question}<span aria-hidden="true">+</span></summary><p>{faq.answer}</p></details>)}</div></div></section>
 
-      <section className="contact-band"><div className="site-container contact-content"><p className="eyebrow">Ready when you are</p><h2>Let&apos;s make your<br /><em>next move clear.</em></h2><Link href="/contact" className="button button-light">Start a project <span aria-hidden="true">↗</span></Link><p className="service-reassurance">Free 15-minute consultation. No obligation.</p></div></section>
+      <section className="contact-band"><div className="site-container contact-content"><p className="eyebrow">Ready when you are</p><h2>Let&apos;s make your<br /><em>next move clear.</em></h2><Link href="/contact" className="button button-light">Start a project <span aria-hidden="true">↗</span></Link><p className="service-reassurance">Tell us what you have in mind and we&apos;ll talk through the next step.</p></div></section>
     </main>
   );
 }

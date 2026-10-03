@@ -6,10 +6,12 @@ export type Service = {
   outcome: string;
   image: string;
   imageAlt: string;
+  bestFor?: string;
+  timeline?: string;
+  startingFrom?: string;
   deliverables: string[];
   samples: { title: string; caption: string; image: string }[];
   packages: { name: string; price: string; description: string; featured?: boolean }[];
-  testimonials: string[];
   faqs: { question: string; answer: string }[];
 };
 
@@ -37,7 +39,6 @@ export const services: Service[] = [
       { name: 'Campaign', price: 'From KSh 65,000', description: 'A complete launch set across posts, stories, and paid formats.', featured: true },
       { name: 'Ongoing', price: 'Custom', description: 'A consistent monthly design partner for active brands.' },
     ],
-    testimonials: ['“Our content finally looks as confident as the business behind it.”', '“The templates gave our team speed without losing personality.”'],
     faqs: [
       { question: 'Can you work from our existing brand?', answer: 'Yes. We can extend your current identity or sharpen the parts that are not working.' },
       { question: 'How many graphics are included?', answer: 'The package determines the quantity, with custom bundles available for larger campaigns.' },
@@ -61,7 +62,6 @@ export const services: Service[] = [
       { name: 'Signature', price: 'From KSh 150,000', description: 'A complete identity system with launch-ready brand touchpoints.', featured: true },
       { name: 'Full system', price: 'Custom', description: 'A deeper identity and rollout for ambitious growing brands.' },
     ],
-    testimonials: ['“Nuru gave us the clarity to show up like the brand we knew we could be.”', '“Every detail feels intentional, from the logo to the last slide.”'],
     faqs: [
       { question: 'How many logo concepts do we receive?', answer: 'The Signature package includes three distinct concepts, each grounded in the agreed strategy.' },
       { question: 'What file formats are included?', answer: 'You receive the final identity in web and print-ready formats, including SVG, PDF, PNG, and JPG.' },
@@ -85,7 +85,6 @@ export const services: Service[] = [
       { name: 'Print suite', price: 'From KSh 70,000', description: 'A coordinated set of collateral for a campaign or launch.', featured: true },
       { name: 'Ongoing', price: 'Custom', description: 'Flexible support for recurring print and production needs.' },
     ],
-    testimonials: ['“The printed pieces made our launch feel like a real occasion.”', '“They handled the details we did not know to ask about.”'],
     faqs: [
       { question: 'Do you manage printing?', answer: 'We can prepare production-ready files and support vendor coordination or print supervision.' },
       { question: 'Can you recommend materials?', answer: 'Yes. We recommend stock, format, and finish based on the purpose and budget.' },
@@ -109,7 +108,6 @@ export const services: Service[] = [
       { name: 'Full campaign', price: 'From KSh 140,000', description: 'A complete campaign system across digital and print.', featured: true },
       { name: 'Partnership', price: 'Custom', description: 'Ongoing creative direction for teams with ambitious plans.' },
     ],
-    testimonials: ['“The campaign gave our launch a clear voice from day one.”', '“We finally had one idea working hard across every channel.”'],
     faqs: [
       { question: 'Do you start with strategy?', answer: 'Yes. We clarify the audience, message, and action before exploring visual directions.' },
       { question: 'Can you adapt a campaign to multiple channels?', answer: 'That is the point. We build a core idea that can flex without losing recognition.' },
@@ -121,4 +119,57 @@ export const services: Service[] = [
 
 export function getService(slug: string) {
   return services.find((service) => service.slug === slug);
+}
+
+export async function getPublicServices(): Promise<Service[]> {
+  if (!process.env.DATABASE_URI) return services;
+
+  try {
+    const { getPayloadClient } = await import('@/lib/payload-client');
+    const payload = await getPayloadClient();
+    if (!payload) return services;
+    const result = await Promise.race([
+      payload.find({
+        collection: 'services',
+        where: { status: { equals: 'published' } },
+        sort: 'sortOrder',
+        limit: 100,
+      }),
+      new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Service lookup timed out')), 5000);
+      }),
+    ]);
+
+    if (!result.docs.length) return services;
+
+    const publishedServices = result.docs.map((doc) => ({
+      number: doc.number,
+      slug: doc.slug,
+      title: doc.title,
+      shortDescription: doc.shortDescription,
+      outcome: doc.outcome,
+      image: doc.image || '',
+      imageAlt: doc.imageAlt || doc.title,
+      bestFor: doc.bestFor || undefined,
+      timeline: doc.timeline || undefined,
+      startingFrom: doc.startingFrom || undefined,
+      deliverables: doc.deliverables?.map(({ item }) => item) ?? [],
+      samples: doc.samples?.map(({ title, caption, image }) => ({ title, caption, image })) ?? [],
+      packages: doc.packages?.map(({ name, price, description, featured }) => ({ name, price, description, featured: Boolean(featured) })) ?? [],
+      faqs: doc.faqs?.map(({ question, answer }) => ({ question, answer })) ?? [],
+    }));
+
+    const publishedSlugs = new Set(publishedServices.map((service) => service.slug));
+    // Keep built-in entries for slugs that editors have not published in the CMS.
+    const retainedFallbacks = services.filter((service) => !publishedSlugs.has(service.slug));
+
+    return [...publishedServices, ...retainedFallbacks];
+  } catch {
+    return services;
+  }
+}
+
+export async function getPublicService(slug: string): Promise<Service | undefined> {
+  const publicServices = await getPublicServices();
+  return publicServices.find((service) => service.slug === slug);
 }
