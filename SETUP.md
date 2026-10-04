@@ -39,6 +39,8 @@ Supabase provides a free PostgreSQL database perfect for Payload CMS.
    DATABASE_URI=postgresql://postgres.[PROJECT_ID]:YOUR_PASSWORD@aws-0-[REGION].pooler.supabase.com:5432/postgres
    ```
 
+For PostgreSQL TLS verification, download the root certificate from **Supabase Dashboard → Database → Settings → SSL Configuration** and set `DATABASE_SSL_CA_FILE` to the local certificate file path. Alternatively, set `DATABASE_SSL_CA` to the PEM certificate contents, preserving the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines. The app verifies the server certificate and does not disable TLS verification.
+
 ### Step 4: Enable Replication (Important!)
 1. Go to **Settings** → **Replication**
 2. Make sure replication is enabled (should be by default)
@@ -120,10 +122,16 @@ In the "Environment Variables" section, add:
 | Name | Value |
 |------|-------|
 | `DATABASE_URI` | Your Supabase connection string |
+| `DATABASE_SSL_CA` | Supabase database root certificate PEM, used to verify the TLS connection |
+| `DATABASE_SSL_CA_FILE` | Path to the downloaded Supabase database root certificate |
 | `PAYLOAD_SECRET` | Random 32+ character string |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Your cloud name |
 | `CLOUDINARY_API_KEY` | Your API key |
 | `CLOUDINARY_API_SECRET` | Your API secret |
+| `NEXT_PUBLIC_SITE_URL` | The canonical HTTPS URL for your production site |
+| `RESEND_API_KEY` | Optional API key for contact email notifications |
+| `CONTACT_RECIPIENT_EMAIL` | Optional inbox that receives contact notifications |
+| `CONTACT_FROM_EMAIL` | Optional verified sender address used for notifications |
 
 **Generate a Payload Secret:**
 ```bash
@@ -154,6 +162,7 @@ cp .env.example .env.local
 Edit `.env.local` with your credentials from Supabase, Cloudinary, and generate a local Payload secret:
 ```
 DATABASE_URI=postgresql://...
+DATABASE_SSL_CA_FILE=/path/to/prod-ca-2021.crt
 PAYLOAD_SECRET=your-random-32-char-secret
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
@@ -182,7 +191,13 @@ Visit:
 ## Deploying to Production
 
 ### Automatic Deployments
-Every time you push to `main` on GitHub, Vercel can build and deploy the site. The repository quality workflow runs `npm run check` on pull requests and pushes; it does not currently run the production build or automated tests.
+Every time you push to `main` on GitHub, Vercel can build and deploy the site. The repository quality workflow runs `npm run check` and a production build on pull requests and pushes. It does not connect to a database and does not currently run automated tests.
+
+Before deploying a collection/schema change, run the **Production database migrations** workflow from the `main` branch in GitHub Actions. Configure a GitHub environment named `production` with `DATABASE_URI` and `PAYLOAD_SECRET` secrets. The migration job is manually triggered and serialized so previews and ordinary pushes cannot change the production schema.
+
+The contact endpoint applies a best-effort limit of five requests per IP per 15 minutes in each running application instance. It uses the hosting proxy's `x-real-ip` header; do not expose the app directly with a client-controllable value for this header. For distributed rate limiting across serverless instances, configure an edge-level limit or a shared rate-limit store.
+
+To receive contact notifications, configure `RESEND_API_KEY`, `CONTACT_RECIPIENT_EMAIL`, and `CONTACT_FROM_EMAIL` in the deployment environment. These are optional; without all three, submissions are still saved but no notification is sent. Verify the sender domain in Resend first. The form submission is saved even if notification delivery fails; check server logs for delivery errors.
 
 ### Manual Deployment
 ```bash
@@ -198,7 +213,7 @@ When you update a Payload collection, treat the schema change as a migration:
 1. Review the collection change and its effect on existing records.
 2. Generate or apply the appropriate Payload migration using the project's installed Payload CLI.
 3. Test the migration against a non-production database.
-4. Deploy the migration before relying on the new fields in production.
+4. Back up production and run the GitHub Actions migration workflow before deploying code that relies on the new fields.
 
 Do not enable automatic schema push in production. The `Projects.category` field is required, so existing projects must be backfilled before that change is applied to a database containing older records.
 

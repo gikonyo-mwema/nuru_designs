@@ -38,6 +38,16 @@ npm run build
 
 Then manually verify the affected route in the browser. Database-backed routes require a working `DATABASE_URI`; public pages should still render their empty states when content is unavailable.
 
+## Documentation Expectations
+
+Update documentation when a change affects route behavior, content ownership or editing, environment variables, security boundaries, database schema, deployment, or operational recovery. Prefer updating the relevant guide over duplicating instructions across files.
+
+Use comments to record non-obvious rationale, constraints, and contracts. Do not add comments that simply restate what clear names, types, or code already say, and do not require every source file to contain a comment. Keep Payload field descriptions focused on helping editors enter and publish content correctly.
+
+Do not hand-edit generated files such as `payload-types.ts`, generated Payload import maps, or migration JSON snapshots. Update their source and regenerate them with the project tooling instead. Migration source should explain unusual data transformations or operational assumptions, not narrate routine SQL.
+
+When adding docs, verify referenced paths, commands, environment-variable names, and framework behavior against the current implementation and the installed framework version.
+
 ## Commit Messages
 
 Use imperative, focused messages:

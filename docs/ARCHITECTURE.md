@@ -52,9 +52,34 @@ The public work archive reads projects and filters by category using `/work?cate
 
 Upload records used by project hero images and galleries. Image delivery configuration must be kept consistent with the chosen storage provider before production deployment.
 
+### Services, FAQs, Teams, and Site Content
+
+- **Services** are managed in Payload and rendered with the built-in service definitions in `lib/services.ts` as fallbacks. Published CMS records replace fallback entries with the same slug; fallback entries without a published CMS match remain available. The built-in definitions also provide service route parameters and sitemap entries.
+- **FAQs** are managed in Payload by placement (`home`, `services`, or `both`). If the database is unavailable or there are no published matches for a placement, the public pages use the fallback FAQ lists in `lib/site-content.ts`.
+- **Teams** are managed in Payload and shown on the About page. Unlike FAQs, the public team query returns an empty list when no published records can be loaded.
+- **Site Content** is a Payload global for editable homepage, About, and footer copy. Missing CMS values are filled from `fallbackSiteContent` in `lib/site-content.ts`.
+
 ### Contact Submissions
 
-The public contact API validates name, email, and message, then creates a Payload record. Administrative read/update/delete access is restricted to authenticated users.
+The public contact API validates name, email, and message, then creates a Payload record. Administrative read/update/delete access is restricted to authenticated users. Optional Resend email notification happens after the record is stored, so notification delivery failure does not discard the submission.
+
+## Public Content and Revalidation
+
+Public pages use server-side Payload reads for projects and CMS-managed content. Database-backed reads have bounded waits and content-specific fallback behavior so public pages can remain useful during database outages; the admin still requires a working database.
+
+Payload collection changes and deletions use hooks in `lib/revalidate.ts` to invalidate the site layout. Site Content changes invalidate the root layout, while Team changes invalidate `/about`. Preserve these hooks when adding or changing public-facing collections so edits become visible without waiting for a deployment.
+
+## Media Storage
+
+`lib/cloudinary-adapter.ts` stores uploaded media under the `nuru-designs/media` Cloudinary folder. Public IDs omit filename extensions; delivery URLs restore the extension as the format. Production deployments must configure Cloudinary because production filesystems are ephemeral and local-disk uploads are disabled. Public delivery URLs are direct Cloudinary URLs, so Payload access control does not protect the image itself.
+
+## Search and Canonical URLs
+
+`lib/site-url.ts` sets the base URL in this order: `NEXT_PUBLIC_SITE_URL`, `VERCEL_URL` (with `https://` added when needed), then `http://localhost:3000`. Keep `NEXT_PUBLIC_SITE_URL` set to the canonical production origin so metadata and `robots.txt` do not advertise a preview or localhost URL. `app/robots.ts` disallows `/admin/` and points crawlers to the sitemap. `app/sitemap.ts` lists built-in service slugs and static public routes, then adds published project slugs from Payload; if the database is missing, unavailable, or times out, it returns the static routes only.
+
+## Contact Endpoint Boundaries
+
+`app/api/contact/route.ts` caps request bodies and field lengths, validates the form server-side, accepts a honeypot field for bot submissions, and applies a best-effort limit of five requests per address per 15 minutes. The limiter is in-memory and therefore applies per running application instance, not globally across serverless instances. The address comes from `x-real-ip`, which must be set by trusted hosting infrastructure; do not expose the application directly to client-controlled values for that header. Use an edge-level limit or shared store for distributed enforcement.
 
 ## Data and Failure Boundaries
 
@@ -73,3 +98,7 @@ See `.env.example` for the complete variable list. Keep secrets in `.env.local` 
 - API behavior: `app/api/`
 - Framework/build behavior: `next.config.mjs`, `tsconfig.json`, and package scripts
 - Team process: `CONTRIBUTING.md`
+
+## Schema and Deployment Changes
+
+Payload schema changes require reviewed migrations; do not turn on automatic schema push in production. The production migration workflow is manually dispatched from `main`, runs in the GitHub `production` environment, and requires `DATABASE_URI` and `PAYLOAD_SECRET`. Follow the migration procedure in `SETUP.md` and verify changes against a non-production database before production.
