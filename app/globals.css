@@ -42,7 +42,7 @@ a { color: inherit; text-decoration: none; }
 .site-nav-over-hero .nav-phone-icon { color: var(--acid); }
 .site-nav-over-hero .nav-links a::after { background: var(--acid); }
 .hero-section { position: relative; min-height: 690px; display: flex; align-items: center; overflow: hidden; color: var(--paper); }
-.hero-background { position: absolute; inset: -8%; background: linear-gradient(180deg, rgba(10, 7, 17, .72) 0%, rgba(10, 7, 17, .2) 30%, rgba(10, 7, 17, 0) 58%), linear-gradient(90deg, rgba(10, 7, 17, .94), rgba(10, 7, 17, .78)), url('https://images.unsplash.com/photo-1517842645767-c639042777db?w=2200&auto=format&fit=crop&q=85') center / cover; animation: hero-drift 10s ease-in-out infinite alternate; }
+.hero-background { position: absolute; inset: -8%; background: linear-gradient(180deg, rgba(10, 7, 17, .72) 0%, rgba(10, 7, 17, .2) 30%, rgba(10, 7, 17, 0) 58%), linear-gradient(90deg, rgba(10, 7, 17, .94), rgba(10, 7, 17, .78)), var(--hero-background-image, url('https://images.unsplash.com/photo-1517842645767-c639042777db?w=2200&auto=format&fit=crop&q=85')) center / cover; animation: hero-drift 10s ease-in-out infinite alternate; }
 .hero-content { position: relative; z-index: 1; padding: 110px 0 125px; }
 .eyebrow { margin: 0 0 22px; color: var(--muted); font: 700 .68rem/1 Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
 .hero-title, h2 { margin: 0; font-size: clamp(3.5rem, 7vw, 6.8rem); font-weight: 400; line-height: .92; letter-spacing: -.07em; }.hero-title em, h2 em { color: var(--acid); font-style: italic; }

@@ -57,11 +57,18 @@ export default async function Home() {
     getPublicSiteContent(),
     getPublicFaqs('home'),
   ]);
+  const heroBackgroundImage = typeof content.homeHeroBackground === 'object'
+    ? content.homeHeroBackground?.url
+    : undefined;
 
   return (
     <main>
       <section className="hero-section">
-        <div className="hero-background" aria-hidden="true" />
+        <div
+          className="hero-background"
+          style={heroBackgroundImage ? { '--hero-background-image': `url("${heroBackgroundImage}")` } as React.CSSProperties : undefined}
+          aria-hidden="true"
+        />
         <div className="site-container hero-content">
           <div className="hero-copy">
             <p className="eyebrow reveal">Independent design studio</p>

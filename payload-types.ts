@@ -766,6 +766,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface SiteContent {
   id: number;
   /**
+   * Upload a new hero background or choose an image from the Media library.
+   */
+  homeHeroBackground?: (number | null) | Media;
+  /**
    * First part of the homepage headline.
    */
   homeHeroLead?: string | null;
@@ -911,6 +915,7 @@ export interface SiteContent {
  * via the `definition` "site-content_select".
  */
 export interface SiteContentSelect<T extends boolean = true> {
+  homeHeroBackground?: T;
   homeHeroLead?: T;
   homeHeroEmphasis?: T;
   homeHeroEnd?: T;
