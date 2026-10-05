@@ -115,7 +115,7 @@ a { color: inherit; text-decoration: none; }
 .nav-links a:hover::after, .nav-links a:focus-visible::after { transform: scaleX(1); transform-origin: left; }
 .nav-links .nav-contact { padding: 8px 0; border: 0; background: transparent; color: inherit; }
 .nav-links .nav-contact::after { display: block; }
-.nav-links .nav-contact:hover, .nav-links .nav-contact:focus-visible { background: transparent; color: var(--ink); }
+.nav-links .nav-contact:hover, .nav-links .nav-contact:focus-visible { background: transparent; color: var(--paper); }
 .nav-links a.is-active { color: var(--ink); opacity: 1; font-weight: 700; }.nav-links a.is-active::after { transform: scaleX(1); transform-origin: left; }.nav-links .nav-contact.is-active { background: transparent; color: var(--ink); }.nav-links .nav-contact.is-active:hover, .nav-links .nav-contact.is-active:focus-visible { background: transparent; }
 .brand-mark:hover, .brand-mark:focus-visible { color: var(--ink); }
 .service-card-plain { justify-content: initial; }
@@ -274,6 +274,8 @@ a { color: inherit; text-decoration: none; }
 .services-page .services-conversion h2 { max-width: 620px; margin-right: auto; margin-left: auto; font-size: clamp(3.2rem, 7vw, 6rem); line-height: .9; }
 .services-page .services-conversion-inner > div:last-child > p { max-width: 540px; margin: 28px auto 0; color: var(--muted); font-size: 1.08rem; line-height: 1.55; }
 .services-page .services-conversion .service-block-actions { display: flex; align-items: center; justify-content: center; gap: 24px; max-width: none; margin: 32px auto 0; }
+.service-detail-hero-grid { grid-template-columns: minmax(0, 900px); justify-content: center; gap: 48px; }
+.service-detail-hero-image { order: 0; width: 100%; max-width: 900px; margin: 0 auto; }
 .contact-page { padding-bottom: 96px; }
 .contact-intro { padding: 84px 0 52px; text-align: center; }
 .contact-intro h1 { margin: 0; font-size: clamp(4rem, 8vw, 8rem); font-weight: 400; line-height: .88; letter-spacing: -.08em; }
