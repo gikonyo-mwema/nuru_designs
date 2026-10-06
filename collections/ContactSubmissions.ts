@@ -7,7 +7,7 @@ const ContactSubmissions: CollectionConfig = {
     useAsTitle: 'email',
     group: 'Enquiries',
     description: 'Messages from prospective and current clients.',
-    defaultColumns: ['name', 'email', 'status', 'followUpAt', 'createdAt'],
+    defaultColumns: ['name', 'business', 'service', 'status', 'followUpAt', 'createdAt'],
   },
   access: {
     read: ({ req: { user } }) => Boolean(user),
@@ -19,6 +19,9 @@ const ContactSubmissions: CollectionConfig = {
   fields: [
     { name: 'name', type: 'text', required: true, admin: { readOnly: true } },
     { name: 'email', type: 'email', required: true, admin: { readOnly: true } },
+    { name: 'business', type: 'text', admin: { readOnly: true } },
+    { name: 'whatsapp', type: 'text', admin: { readOnly: true } },
+    { name: 'service', type: 'text', admin: { readOnly: true } },
     { name: 'message', type: 'textarea', required: true, admin: { readOnly: true } },
     {
       name: 'status',

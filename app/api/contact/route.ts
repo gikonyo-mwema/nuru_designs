@@ -3,6 +3,7 @@ import { getPayload } from 'payload';
 import { isIP } from 'node:net';
 
 import config from '@payload-config';
+import { contactServiceOptions } from '@/lib/contact-service-options';
 
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
@@ -12,7 +13,7 @@ const MAX_BODY_BYTES = 16_000;
 // This bounds memory per process; distributed deployments need an edge or shared-store limit.
 const requestsByAddress = new Map<string, { count: number; resetAt: number }>();
 
-async function sendContactNotification({ name, email, message }: { name: string; email: string; message: string }) {
+async function sendContactNotification({ name, email, business, whatsapp, service, message }: { name: string; email: string; business: string; whatsapp: string; service: string; message: string }) {
   const apiKey = process.env.RESEND_API_KEY;
   const recipient = process.env.CONTACT_RECIPIENT_EMAIL;
   const sender = process.env.CONTACT_FROM_EMAIL;
@@ -30,7 +31,7 @@ async function sendContactNotification({ name, email, message }: { name: string;
         to: [recipient],
         reply_to: email,
         subject: `New website enquiry from ${name}`,
-        text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+        text: `Name: ${name}\nEmail: ${email}\nBusiness: ${business || 'Not provided'}\nWhatsApp: ${whatsapp || 'Not provided'}\nService: ${service || 'Not specified'}\n\n${message}`,
       }),
       signal: AbortSignal.timeout(5_000),
     });
@@ -142,11 +143,18 @@ export async function POST(request: Request) {
 
   const name = typeof formBody.name === 'string' ? formBody.name.trim() : '';
   const email = typeof formBody.email === 'string' ? formBody.email.trim() : '';
+  const business = typeof formBody.business === 'string' ? formBody.business.trim() : '';
+  const whatsapp = typeof formBody.whatsapp === 'string' ? formBody.whatsapp.trim() : '';
+  const service = typeof formBody.service === 'string' ? formBody.service.trim() : '';
   const message = typeof formBody.message === 'string' ? formBody.message.trim() : '';
 
   if (
     !name || name.length > 120
     || !email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    || business.length > 160
+    || whatsapp.length > 40
+    || service.length > 80
+    || (service !== '' && !contactServiceOptions.some(({ value }) => value === service))
     || !message || message.length > 5000
   ) {
     return NextResponse.json(
@@ -163,14 +171,14 @@ export async function POST(request: Request) {
     const payload = await getPayload({ config });
     await payload.create({
       collection: 'contact-submissions',
-      data: { name, email, message, status: 'new' },
+      data: { name, email, business: business || undefined, whatsapp: whatsapp || undefined, service: service || undefined, message, status: 'new' },
     });
   } catch {
     return NextResponse.json({ error: 'We could not send your message right now. Please try again or email us directly.' }, { status: 503 });
   }
 
   // Persist first so an optional email delivery failure cannot lose the enquiry.
-  await sendContactNotification({ name, email, message });
+  await sendContactNotification({ name, email, business, whatsapp, service, message });
 
   return NextResponse.json({ message: 'Thanks. We will be in touch soon.' });
 }

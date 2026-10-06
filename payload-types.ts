@@ -440,6 +440,9 @@ export interface ContactSubmission {
   id: number;
   name: string;
   email: string;
+  business?: string | null;
+  whatsapp?: string | null;
+  service?: string | null;
   message: string;
   status: 'new' | 'contacted' | 'qualified' | 'closed' | 'spam';
   /**
@@ -709,6 +712,9 @@ export interface TeamsSelect<T extends boolean = true> {
 export interface ContactSubmissionsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
+  business?: T;
+  whatsapp?: T;
+  service?: T;
   message?: T;
   status?: T;
   notes?: T;
@@ -782,11 +788,11 @@ export interface SiteContent {
    */
   homeHeroEnd?: string | null;
   /**
-   * Short sentence beneath the homepage headline.
+   * Clearly name the design services and audience beneath the homepage headline.
    */
   homeHeroIntro?: string | null;
   /**
-   * Short labels displayed in the homepage trust strip.
+   * Business sectors displayed beneath the homepage hero. These describe your audience, not client endorsements.
    */
   trustSectors?:
     | {

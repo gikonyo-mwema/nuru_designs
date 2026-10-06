@@ -10,11 +10,6 @@ export const metadata: Metadata = {
   description: 'Explore selected brand identity, campaign, social media, and print design work by Nuru Designs.',
 };
 
-const categories = [
-  ['all', 'All work'] as const,
-  ...projectCategories,
-] as const;
-
 type Project = {
   id: string;
   title: string;
@@ -58,8 +53,13 @@ export default async function WorkPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category: requestedCategory = 'all' } = await searchParams;
-  const category = categories.some(([value]) => value === requestedCategory) ? requestedCategory : 'all';
   const projects = await getProjects();
+  const assignedCategories = new Set(projects.map((project) => project.category).filter(Boolean));
+  const categories = [
+    ['all', 'All work'] as const,
+    ...projectCategories.filter(([value]) => assignedCategories.has(value)),
+  ];
+  const category = categories.some(([value]) => value === requestedCategory) ? requestedCategory : 'all';
 
   return (
     <main className="work-page">

@@ -52,27 +52,37 @@ export default function WorkArchive({
 
   return (
     <>
-      <section className="work-archive-controls site-container" aria-label="Search and filter projects">
-        <label className="work-search">
-          <span>Search work</span>
-          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Project, client, or keyword" />
-        </label>
-        <div className="work-filters" role="group" aria-label="Filter work by category">
-          {categories.map(([value, label]) => (
-            <button type="button" className={category === value ? 'is-active' : ''} aria-pressed={category === value} onClick={() => updateCategory(value)} key={value}>{label}</button>
-          ))}
+      {projects.length > 0 ? (
+        <>
+          <section className="work-archive-controls site-container" aria-label="Search and filter projects">
+            <label className="work-search">
+              <span>Search work</span>
+              <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Project, client, or keyword" />
+            </label>
+            <div className="work-filters" role="group" aria-label="Filter work by category">
+              {categories.map(([value, label]) => (
+                <button type="button" className={category === value ? 'is-active' : ''} aria-pressed={category === value} onClick={() => updateCategory(value)} key={value}>{label}</button>
+              ))}
+            </div>
+            {tags.length > 0 ? (
+              <div className="work-tag-filters" role="group" aria-label="Filter work by tag">
+                <span>Tags</span>
+                <button type="button" className={!selectedTag ? 'is-active' : ''} aria-pressed={!selectedTag} onClick={() => setSelectedTag('')}>All tags</button>
+                {tags.map((tag) => <button type="button" className={selectedTag === tag ? 'is-active' : ''} aria-pressed={selectedTag === tag} onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)} key={tag}>{tag}</button>)}
+              </div>
+            ) : null}
+          </section>
+          <p className="work-results site-container" role="status">{visibleProjects.length} {visibleProjects.length === 1 ? 'project' : 'projects'}</p>
+        </>
+      ) : null}
+      {projects.length === 0 ? (
+        <div className="work-empty site-container">
+          <p>Our portfolio is taking shape.</p>
+          <p>Need branding, social media, campaign, or print design? Let&apos;s talk about your project.</p>
+          <Link href="/contact" className="text-link">Discuss a project <span aria-hidden="true">↗</span></Link>
         </div>
-        {tags.length > 0 ? (
-          <div className="work-tag-filters" role="group" aria-label="Filter work by tag">
-            <span>Tags</span>
-            <button type="button" className={!selectedTag ? 'is-active' : ''} aria-pressed={!selectedTag} onClick={() => setSelectedTag('')}>All tags</button>
-            {tags.map((tag) => <button type="button" className={selectedTag === tag ? 'is-active' : ''} aria-pressed={selectedTag === tag} onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)} key={tag}>{tag}</button>)}
-          </div>
-        ) : null}
-      </section>
-      <p className="work-results site-container" role="status">{visibleProjects.length} {visibleProjects.length === 1 ? 'project' : 'projects'}</p>
-      {visibleProjects.length === 0 ? (
-        <div className="work-empty site-container"><p>{projects.length ? 'No projects match those filters.' : 'No published work has been added yet.'}</p>{projects.length ? <button type="button" className="text-link" onClick={() => { setQuery(''); setSelectedTag(''); updateCategory('all'); }}>Clear filters</button> : null}</div>
+      ) : visibleProjects.length === 0 ? (
+        <div className="work-empty site-container"><p>No projects match those filters.</p><button type="button" className="text-link" onClick={() => { setQuery(''); setSelectedTag(''); updateCategory('all'); }}>Clear filters</button></div>
       ) : (
         <div className="work-grid site-container">
           {visibleProjects.map((project) => {

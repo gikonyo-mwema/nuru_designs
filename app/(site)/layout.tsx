@@ -32,14 +32,42 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
               <p>{content.footerStudioDescription}</p>
             </div>
             <div className="footer-column">
-              <h2>Quick links</h2>
-              <ul className="footer-links"><li><Link href="/">Home</Link></li><li><Link href="/services">Services</Link></li><li><Link href="/work">Work</Link></li><li><Link href="/about">About us</Link></li><li><Link href="/contact">Contact</Link></li></ul>
+              <h2>Services</h2>
+              <ul className="footer-links">
+                <li><Link href="/services/brand-identity-and-logo-design">Branding</Link></li>
+                <li><Link href="/services/social-media-graphics">Social Media</Link></li>
+                <li><Link href="/services/print-design">Flyers &amp; Posters</Link></li>
+                <li><Link href="/services/print-design">Print Design</Link></li>
+                <li><Link href="/services/print-design">Packaging</Link></li>
+                <li><Link href="/services/print-design">Company Profiles</Link></li>
+              </ul>
             </div>
             <div className="footer-column">
-              <h2>Contact info</h2>
-              <p>Have a question or a project in mind?</p>
-              <a className="footer-phone" href={`tel:${content.contactPhoneLink}`}>{content.contactPhoneDisplay}</a>
-              <a className="footer-email" href={`mailto:${content.contactEmail}`}>{content.contactEmail}</a>
+              <h2>Work</h2>
+              <ul className="footer-links">
+                <li><Link href="/work?category=brand-identity">Branding</Link></li>
+                <li><Link href="/work?category=social-media">Social Media</Link></li>
+                <li><Link href="/work">Print</Link></li>
+                <li><Link href="/work?category=campaigns">Campaigns</Link></li>
+              </ul>
+            </div>
+            <div className="footer-column">
+              <h2>Contact</h2>
+              <ul className="footer-links">
+                <li><a href="https://wa.me/254180693218" target="_blank" rel="noreferrer">WhatsApp</a></li>
+                <li><a href={`mailto:${content.contactEmail}`}>Email</a></li>
+                <li><a href={`tel:${content.contactPhoneLink}`}>Phone</a></li>
+                <li><span>Nairobi, Kenya</span></li>
+              </ul>
+            </div>
+            <div className="footer-column">
+              <h2>Social</h2>
+              <ul className="footer-links">
+                <li><span>Instagram</span></li>
+                <li><span>Facebook</span></li>
+                <li><span>TikTok</span></li>
+                <li><span>LinkedIn</span></li>
+              </ul>
             </div>
           </div>
           <div className="site-container footer-bottom">

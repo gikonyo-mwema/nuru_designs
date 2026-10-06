@@ -86,11 +86,25 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="trust-strip" aria-label="Client trust statement">
+      <section className="trust-strip" aria-label="Businesses we serve">
         <div className="site-container trust-strip-inner">
-          <p className="eyebrow">Trusted by ambitious brands</p>
-          <div className="trust-sectors" aria-label="Client sectors">
+          <p className="eyebrow">Design for businesses across Kenya</p>
+          <div className="trust-sectors" aria-label="Business sectors">
             {content.trustSectors?.map(({ label }, index) => <span key={`${label}-${index}`}>{label}</span>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-tint">
+        <div className="site-container services-section">
+          <div className="services-intro-centered"><p className="eyebrow">What we do</p><h2>Clarity, character, and craft.</h2><p className="section-intro">From first thought to final pixel, we help ambitious businesses show up with confidence.</p></div>
+          <div className="services-cards">
+            {services.map((service) => (
+              <Link href={`/services/${service.slug}`} className="service-card service-card-plain" key={service.slug}>
+                <div className="service-card-icon" aria-hidden="true">{service.slug === 'social-media-graphics' ? <Megaphone /> : service.slug === 'brand-identity-and-logo-design' ? <Palette /> : service.slug === 'print-design' ? <Printer /> : <PenTool />}</div>
+                <div className="service-card-content"><h3>{service.title}</h3><p>{service.shortDescription}</p>{service.packages[0]?.price ? <span className="homepage-service-price">Packages {service.packages[0].price}</span> : null}<span className="service-card-arrow" aria-hidden="true">→</span></div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -101,22 +115,8 @@ export default async function Home() {
           <Link href="/work" className="text-link">View all work <span aria-hidden="true">↗</span></Link>
         </div>
         {projects.length > 0 ? <SelectedWorkGallery projects={projects} /> : (
-          <div className="work-placeholder"><span>Selected work is on its way.</span><Link href="/contact" className="text-link">Work with us <span aria-hidden="true">↗</span></Link></div>
+          <div className="work-placeholder"><span>Our portfolio is taking shape. Need design for your business? Let&apos;s talk.</span><Link href="/contact" className="text-link">Discuss a project <span aria-hidden="true">↗</span></Link></div>
         )}
-      </section>
-
-      <section className="section section-tint">
-        <div className="site-container services-section">
-          <div className="services-intro-centered"><p className="eyebrow">What we do</p><h2>Clarity, character, and craft.</h2><p className="section-intro">From first thought to final pixel, we help ambitious businesses show up with confidence.</p></div>
-          <div className="services-cards">
-            {services.map((service) => (
-              <Link href={`/services/${service.slug}`} className="service-card service-card-plain" key={service.slug}>
-                <div className="service-card-icon" aria-hidden="true">{service.slug === 'social-media-graphics' ? <Megaphone /> : service.slug === 'brand-identity-and-logo-design' ? <Palette /> : service.slug === 'print-design' ? <Printer /> : <PenTool />}</div>
-                <div className="service-card-content"><h3>{service.title}</h3><p>{service.shortDescription}</p><span className="service-card-arrow" aria-hidden="true">→</span></div>
-              </Link>
-            ))}
-          </div>
-        </div>
       </section>
 
       <section className="founder-section">

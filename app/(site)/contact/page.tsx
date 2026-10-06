@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import { contactServiceOptions } from '@/lib/contact-service-options';
 
 export default function ContactPage() {
   const [feedback, setFeedback] = useState<{ message: string; success: boolean } | null>(null);
@@ -57,6 +58,17 @@ export default function ContactPage() {
           <div className="contact-form-row">
             <div className="contact-field"><label htmlFor="name">Name</label><input type="text" id="name" name="name" autoComplete="name" required placeholder="Your name" /></div>
             <div className="contact-field"><label htmlFor="email">Email</label><input type="email" id="email" name="email" autoComplete="email" required placeholder="you@example.com" /></div>
+          </div>
+          <div className="contact-form-row">
+            <div className="contact-field"><label htmlFor="business">Business name <span>(optional)</span></label><input type="text" id="business" name="business" autoComplete="organization" maxLength={160} placeholder="Your business or organization" /></div>
+            <div className="contact-field"><label htmlFor="whatsapp">WhatsApp number <span>(optional)</span></label><input type="tel" id="whatsapp" name="whatsapp" autoComplete="tel" maxLength={40} placeholder="+254..." /></div>
+          </div>
+          <div className="contact-field">
+            <label htmlFor="service">What do you need designed? <span>(optional)</span></label>
+            <select id="service" name="service" defaultValue="">
+              <option value="">Choose a service</option>
+              {contactServiceOptions.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
+            </select>
           </div>
           <div className="contact-field"><label htmlFor="message">What can we help you make?</label><textarea id="message" name="message" required rows={7} placeholder="Tell us about your project, timeline, and what success should look like." /></div>
           <div className="contact-form-footer"><p>We usually reply within one working day.</p><button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Sending...' : 'Send message'} <span aria-hidden="true">↗</span></button></div>
