@@ -41,6 +41,8 @@ Supabase provides a free PostgreSQL database perfect for Payload CMS.
 
 For PostgreSQL TLS verification, download the root certificate from **Supabase Dashboard → Database → Settings → SSL Configuration** and set `DATABASE_SSL_CA_FILE` to the local certificate file path. Alternatively, set `DATABASE_SSL_CA` to the PEM certificate contents, preserving the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines. The app verifies the server certificate and does not disable TLS verification.
 
+On Vercel, use `DATABASE_SSL_CA` with the complete PEM contents; a local `DATABASE_SSL_CA_FILE` path is not available in the deployment filesystem. If your database provider intentionally uses a self-signed certificate and does not provide a CA certificate, set `DATABASE_SSL_REJECT_UNAUTHORIZED=false` in Vercel. This keeps TLS encryption but disables certificate identity verification, so prefer the provider CA whenever possible.
+
 ### Step 4: Enable Replication (Important!)
 1. Go to **Settings** → **Replication**
 2. Make sure replication is enabled (should be by default)
@@ -124,6 +126,7 @@ In the "Environment Variables" section, add:
 | `DATABASE_URI` | Your Supabase connection string |
 | `DATABASE_SSL_CA` | Supabase database root certificate PEM, used to verify the TLS connection |
 | `DATABASE_SSL_CA_FILE` | Path to the downloaded Supabase database root certificate |
+| `DATABASE_SSL_REJECT_UNAUTHORIZED` | `true` by default; set to `false` only when the provider uses an unavoidable self-signed certificate |
 | `PAYLOAD_SECRET` | Random 32+ character string |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Your cloud name |
 | `CLOUDINARY_API_KEY` | Your API key |

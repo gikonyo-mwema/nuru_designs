@@ -28,6 +28,7 @@ const databaseSslCaFile = process.env.DATABASE_SSL_CA_FILE?.trim();
 const databaseSslCa = databaseSslCaFile
   ? readFileSync(databaseSslCaFile, 'utf8')
   : process.env.DATABASE_SSL_CA?.replace(/\\n/g, '\n').trim();
+const databaseSslRejectUnauthorized = process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false';
 const payloadSecret = process.env.PAYLOAD_SECRET?.trim() || '';
 
 if (payloadSecret.length < 32) {
@@ -75,7 +76,7 @@ export default buildConfig({
       keepAlive: true,
       ssl: {
         ...(databaseSslCa ? { ca: databaseSslCa } : {}),
-        rejectUnauthorized: true,
+        rejectUnauthorized: databaseSslRejectUnauthorized,
       },
     },
     push: false,
