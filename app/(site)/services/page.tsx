@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Megaphone, Palette, PenTool, Printer } from 'lucide-react';
+import { BookOpen, Building2, Image, Package, Palette, Share2 } from 'lucide-react';
 import { getPublicServices } from '@/lib/services';
 import { getPublicFaqs } from '@/lib/site-content';
 import type { ProjectCategory } from '@/lib/project-categories';
@@ -10,18 +10,22 @@ export const metadata: Metadata = {
   description: 'Brand identity, social media, print, and marketing design for ambitious businesses.',
 };
 
-const serviceIcons = { 'social-media-graphics': Megaphone, 'brand-identity-and-logo-design': Palette, 'print-design': Printer, 'marketing-design': PenTool } as const;
+const serviceIcons = { branding: Palette, 'social-media': Share2, 'flyers-posters': Image, 'print-design': BookOpen, packaging: Package, 'company-profiles': Building2 } as const;
 const serviceWorkCategories = {
-  'social-media-graphics': 'social-media',
-  'brand-identity-and-logo-design': 'brand-identity',
+  branding: 'brand-identity',
+  'social-media': 'social-media',
+  'flyers-posters': 'all',
   'print-design': 'all',
-  'marketing-design': 'campaigns',
+  packaging: 'all',
+  'company-profiles': 'all',
 } satisfies Record<string, ProjectCategory | 'all'>;
 const serviceSignals = {
-  'social-media-graphics': { bestFor: 'Brands ready to show up consistently online', timeline: '2–4 weeks', startingFrom: 'KSh 35,000' },
-  'brand-identity-and-logo-design': { bestFor: 'Businesses rebranding or launching', timeline: '3–5 weeks', startingFrom: 'KSh 85,000' },
+  branding: { bestFor: 'Businesses rebranding or launching', timeline: '3–5 weeks', startingFrom: 'KSh 85,000' },
+  'social-media': { bestFor: 'Brands ready to show up consistently online', timeline: '2–4 weeks', startingFrom: 'KSh 35,000' },
+  'flyers-posters': { bestFor: 'Teams promoting an event, offer, or campaign', timeline: '1–3 weeks', startingFrom: 'KSh 25,000' },
   'print-design': { bestFor: 'Teams bringing a brand into the real world', timeline: '1–3 weeks', startingFrom: 'KSh 25,000' },
-  'marketing-design': { bestFor: 'Businesses launching something people should remember', timeline: '3–6 weeks', startingFrom: 'KSh 75,000' },
+  packaging: { bestFor: 'Product businesses ready to stand out on the shelf', timeline: '2–4 weeks', startingFrom: 'KSh 65,000' },
+  'company-profiles': { bestFor: 'Businesses that need to communicate their value clearly', timeline: '2–4 weeks', startingFrom: 'KSh 55,000' },
 } as const;
 const projectSteps = [
   { number: '01', title: 'Discover', copy: 'We learn your business and find the sharpest truth in it.' },
@@ -35,7 +39,7 @@ export default async function ServicesPage() {
     <main className="services-page">
       <section className="services-intro site-container"><div><p className="eyebrow">What we do</p><h1>Design with a<br /><em>point of view.</em></h1></div><p className="services-lead">We help ambitious businesses become clearer, more confident, and harder to forget through strategy-led design.</p></section>
       <section className="service-blocks site-container" aria-label="Our services">
-        {services.map((service) => { const Icon = serviceIcons[service.slug as keyof typeof serviceIcons] ?? PenTool; const signal = serviceSignals[service.slug as keyof typeof serviceSignals]; const workCategory = serviceWorkCategories[service.slug as keyof typeof serviceWorkCategories] ?? 'all'; return <article className="service-block" key={service.slug}>
+        {services.map((service) => { const Icon = serviceIcons[service.slug as keyof typeof serviceIcons] ?? Palette; const signal = serviceSignals[service.slug as keyof typeof serviceSignals]; const workCategory = serviceWorkCategories[service.slug as keyof typeof serviceWorkCategories] ?? 'all'; return <article className="service-block" key={service.slug}>
           <div className="service-block-heading"><span className="service-block-number">{service.number}</span><Icon className="service-block-icon" aria-hidden="true" /><div><h2>{service.title}</h2><p className="service-block-promise">{service.shortDescription}</p></div></div>
           <div className="service-block-content"><div><p className="eyebrow">What&apos;s included</p><ul className="service-deliverables-list">{service.deliverables.map((item) => <li key={item}>{item}</li>)}</ul></div><div className="service-block-signals"><p><strong>Best for</strong>{service.bestFor ?? signal?.bestFor ?? 'Businesses looking for a clear, considered design partner'}</p><p><strong>Timeline</strong>{service.timeline ?? signal?.timeline ?? 'Scoped to your project'}</p><p><strong>Starting from</strong>{service.startingFrom ?? signal?.startingFrom ?? 'Contact us for a quote'}</p></div></div>
           <div className="service-block-actions"><Link href={workCategory === 'all' ? '/work' : `/work?category=${workCategory}`} className="text-link">See related work <span aria-hidden="true">→</span></Link><Link href="/contact" className="button button-dark">Start a project <span aria-hidden="true">↗</span></Link></div>

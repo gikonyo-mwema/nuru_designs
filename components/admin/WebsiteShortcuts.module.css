@@ -69,7 +69,7 @@
 }
 
 @media (min-width: 1000px) {
-  :global(.gutter.dashboard) {
+  :global(.gutter.dashboard):has(> .panel) {
     display: grid;
     grid-template-columns: minmax(190px, 230px) minmax(0, 1fr);
     align-items: start;

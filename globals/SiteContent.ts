@@ -31,6 +31,12 @@ const SiteContent: GlobalConfig = {
           relationTo: 'media',
           admin: { description: 'Upload a new hero background or choose an image from the Media library.' },
         },
+        {
+          name: 'founderImage',
+          type: 'upload',
+          relationTo: 'media',
+          admin: { description: 'Upload a founder portrait or choose an image from the Media library.' },
+        },
         { name: 'homeHeroLead', type: 'text', admin: { description: 'First part of the homepage headline.' } },
         { name: 'homeHeroEmphasis', type: 'text', admin: { description: 'Emphasized word or phrase in the headline.' } },
         { name: 'homeHeroEnd', type: 'text', admin: { description: 'Final part of the homepage headline.' } },

@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Megaphone, Palette, PenTool, Printer } from 'lucide-react';
-import { getPayload } from 'payload';
-
-import config from '@payload-config';
+import { BookOpen, Building2, Image, Package, Palette, Share2 } from 'lucide-react';
 import SelectedWorkGallery from '@/components/work/SelectedWorkGallery';
+import { getPayloadClient } from '@/lib/payload-client';
 import { getPublicServices } from '@/lib/services';
-import { getPublicFaqs, getPublicSiteContent } from '@/lib/site-content';
+import { getPublicFaqs, getPublicSiteContent, getPublicTeamMembers } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Nuru Designs | Independent Design Studio in Kenya',
@@ -22,11 +20,13 @@ type Project = {
   heroImage?: string | { url?: string; alt?: string };
 };
 
+const serviceIcons = { branding: Palette, 'social-media': Share2, 'flyers-posters': Image, 'print-design': BookOpen, packaging: Package, 'company-profiles': Building2 } as const;
+
 async function getFeaturedProjects(): Promise<Project[]> {
-  if (!process.env.DATABASE_URI) return [];
+  const payload = await getPayloadClient();
+  if (!payload) return [];
 
   try {
-    const payload = await getPayload({ config });
     const result = await Promise.race([
       payload.find({
         collection: 'projects',
@@ -51,15 +51,19 @@ async function getFeaturedProjects(): Promise<Project[]> {
 }
 
 export default async function Home() {
-  const [projects, services, content, faqs] = await Promise.all([
+  const [projects, services, content, faqs, teamMembers] = await Promise.all([
     getFeaturedProjects(),
     getPublicServices(),
     getPublicSiteContent(),
     getPublicFaqs('home'),
+    getPublicTeamMembers(),
   ]);
   const heroBackgroundImage = typeof content.homeHeroBackground === 'object'
     ? content.homeHeroBackground?.url
     : undefined;
+  const founder = teamMembers.find((member) => member.role.toLowerCase().includes('founder')) ?? teamMembers[0];
+  const founderPortraitUrl = founder?.portraitUrl ?? (typeof content.founderImage === 'object' ? content.founderImage?.url : undefined);
+  const founderDisplayName = founder?.name || content.founderName || 'Nuru Designs founder';
 
   return (
     <main>
@@ -101,7 +105,7 @@ export default async function Home() {
           <div className="services-cards">
             {services.map((service) => (
               <Link href={`/services/${service.slug}`} className="service-card service-card-plain" key={service.slug}>
-                <div className="service-card-icon" aria-hidden="true">{service.slug === 'social-media-graphics' ? <Megaphone /> : service.slug === 'brand-identity-and-logo-design' ? <Palette /> : service.slug === 'print-design' ? <Printer /> : <PenTool />}</div>
+                <div className="service-card-icon" aria-hidden="true">{(() => { const Icon = serviceIcons[service.slug as keyof typeof serviceIcons] ?? Palette; return <Icon />; })()}</div>
                 <div className="service-card-content"><h3>{service.title}</h3><p>{service.shortDescription}</p>{service.packages[0]?.price ? <span className="homepage-service-price">Packages {service.packages[0].price}</span> : null}<span className="service-card-arrow" aria-hidden="true">→</span></div>
               </Link>
             ))}
@@ -120,7 +124,7 @@ export default async function Home() {
       </section>
 
       <section className="founder-section">
-        <div className="site-container founder-grid"><div className="founder-face" role="img" aria-label={`Portrait of ${content.founderName || 'the Nuru Designs founder'}`} /><div><p className="eyebrow">{content.founderEyebrow}</p><h2>{content.founderHeading}</h2><p className="founder-copy">{content.founderCopy}</p><p className="founder-name">{content.founderName}</p></div></div>
+        <div className="site-container founder-grid"><div className="founder-face" style={founderPortraitUrl ? { backgroundImage: `url("${founderPortraitUrl}")` } : undefined} role="img" aria-label={`Portrait of ${founderDisplayName}`} /><div><p className="eyebrow">{content.founderEyebrow}</p><h2>{content.founderHeading}</h2><p className="founder-copy">{content.founderCopy}</p><p className="founder-name">{founderDisplayName}</p></div></div>
       </section>
 
       <section className="section site-container process-section">

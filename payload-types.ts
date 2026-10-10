@@ -776,6 +776,10 @@ export interface SiteContent {
    */
   homeHeroBackground?: (number | null) | Media;
   /**
+   * Upload a founder portrait or choose an image from the Media library.
+   */
+  founderImage?: (number | null) | Media;
+  /**
    * First part of the homepage headline.
    */
   homeHeroLead?: string | null;
@@ -922,6 +926,7 @@ export interface SiteContent {
  */
 export interface SiteContentSelect<T extends boolean = true> {
   homeHeroBackground?: T;
+  founderImage?: T;
   homeHeroLead?: T;
   homeHeroEmphasis?: T;
   homeHeroEnd?: T;

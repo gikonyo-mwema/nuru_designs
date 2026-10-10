@@ -24,6 +24,7 @@ net.setDefaultAutoSelectFamily(false);
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const databaseURI = process.env.DATABASE_URI?.trim() || '';
+const payloadDatabaseURI = databaseURI.replace(':6543/', ':5432/');
 const databaseSslCaFile = process.env.DATABASE_SSL_CA_FILE?.trim();
 const databaseSslCa = databaseSslCaFile
   ? readFileSync(databaseSslCaFile, 'utf8')
@@ -69,10 +70,10 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: databaseURI,
+      connectionString: payloadDatabaseURI,
       max: 5,
       idleTimeoutMillis: 10_000,
-      connectionTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 5_000,
       keepAlive: true,
       ssl: {
         ...(databaseSslCa ? { ca: databaseSslCa } : {}),

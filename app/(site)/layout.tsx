@@ -66,12 +66,12 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
             <div className="footer-column">
               <h2>Services</h2>
               <ul className="footer-links">
-                <li><Link href="/services/brand-identity-and-logo-design">Branding</Link></li>
-                <li><Link href="/services/social-media-graphics">Social Media</Link></li>
-                <li><Link href="/services/print-design">Flyers &amp; Posters</Link></li>
+                <li><Link href="/services/branding">Branding</Link></li>
+                <li><Link href="/services/social-media">Social Media</Link></li>
+                <li><Link href="/services/flyers-posters">Flyers &amp; Posters</Link></li>
                 <li><Link href="/services/print-design">Print Design</Link></li>
-                <li><Link href="/services/print-design">Packaging</Link></li>
-                <li><Link href="/services/print-design">Company Profiles</Link></li>
+                <li><Link href="/services/packaging">Packaging</Link></li>
+                <li><Link href="/services/company-profiles">Company Profiles</Link></li>
               </ul>
             </div>
             <div className="footer-column footer-contact-column">

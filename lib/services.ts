@@ -22,9 +22,28 @@ const sampleImages = {
   marketing: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=1200&auto=format&fit=crop&q=85',
 };
 
+const legacyServiceSlugs: Record<string, string> = {
+  'brand-identity-and-logo-design': 'branding',
+  'social-media-graphics': 'social-media',
+  'print-design': 'flyers-posters',
+  'marketing-design': 'print-design',
+};
+
 export const services: Service[] = [
   {
-    number: '01', slug: 'social-media-graphics', title: 'Social media graphics',
+    number: '01', slug: 'branding', title: 'Branding',
+    shortDescription: 'Distinctive identity systems that turn a good business into a memorable brand.',
+    outcome: 'A clear, confident brand people can recognize at a glance.', image: sampleImages.identity, imageAlt: 'Brand identity stationery and logo sketches',
+    deliverables: ['Logo suite and usage guidance', 'Color palette and typography system', 'Brand guidelines PDF', 'Business card, letterhead, and social kit', 'Launch-ready brand assets'],
+    samples: [{ title: 'Identity system', caption: 'A flexible visual language built to move from packaging to digital.', image: sampleImages.identity }],
+    packages: [
+      { name: 'Essential', price: 'From KSh 85,000', description: 'A focused logo suite, palette, type, and core brand guide.' },
+      { name: 'Signature', price: 'From KSh 150,000', description: 'A complete identity system with launch-ready brand touchpoints.', featured: true },
+    ],
+    faqs: [{ question: 'Can you refresh an existing brand?', answer: 'Yes. We can sharpen what is already working or create a fuller identity system around it.' }],
+  },
+  {
+    number: '02', slug: 'social-media', title: 'Social Media',
     shortDescription: 'Scroll-stopping graphics that make every post feel unmistakably yours.',
     outcome: 'A social presence people recognize, remember, and want to follow.', image: sampleImages.social, imageAlt: 'Colorful social media campaign mockups',
     deliverables: ['12 custom post and story templates', 'Campaign art direction and content themes', 'Editable files for your team', 'Platform-ready exports for every format', 'A simple visual guide for consistency'],
@@ -47,30 +66,7 @@ export const services: Service[] = [
     ],
   },
   {
-    number: '02', slug: 'brand-identity-and-logo-design', title: 'Brand identity',
-    shortDescription: 'Distinctive identity systems that turn a good business into a memorable brand.',
-    outcome: 'A clear, confident brand people can recognize at a glance.', image: sampleImages.identity, imageAlt: 'Brand identity stationery and logo sketches',
-    deliverables: ['3 logo concepts with a clear rationale', 'Primary, secondary, and responsive logo marks', 'Color palette and typography system', 'Brand guidelines PDF', 'Business card, letterhead, and social kit'],
-    samples: [
-      { title: 'Identity system', caption: 'A flexible visual language built to move from packaging to digital.', image: sampleImages.identity },
-      { title: 'Logo direction', caption: 'A focused mark and type system that make the brand feel ownable.', image: sampleImages.social },
-      { title: 'Stationery suite', caption: 'Tactile touchpoints that turn every client interaction into a brand moment.', image: sampleImages.print },
-      { title: 'Brand guidelines', caption: 'A practical system that helps the whole team create with confidence.', image: sampleImages.marketing },
-    ],
-    packages: [
-      { name: 'Essential', price: 'From KSh 85,000', description: 'A focused logo suite, palette, type, and core brand guide.' },
-      { name: 'Signature', price: 'From KSh 150,000', description: 'A complete identity system with launch-ready brand touchpoints.', featured: true },
-      { name: 'Full system', price: 'Custom', description: 'A deeper identity and rollout for ambitious growing brands.' },
-    ],
-    faqs: [
-      { question: 'How many logo concepts do we receive?', answer: 'The Signature package includes three distinct concepts, each grounded in the agreed strategy.' },
-      { question: 'What file formats are included?', answer: 'You receive the final identity in web and print-ready formats, including SVG, PDF, PNG, and JPG.' },
-      { question: 'Do you include revisions?', answer: 'Yes. We refine the chosen direction together until it is ready to use.' },
-      { question: 'Can you apply the identity to our existing materials?', answer: 'Yes. We can extend the system across stationery, social, packaging, and digital touchpoints.' },
-    ],
-  },
-  {
-    number: '03', slug: 'print-design', title: 'Print design',
+    number: '03', slug: 'flyers-posters', title: 'Flyers & Posters',
     shortDescription: 'Print pieces with enough presence to earn attention away from the screen.',
     outcome: 'Physical brand moments that people notice, keep, and remember.', image: sampleImages.print, imageAlt: 'Printed editorial design and publications',
     deliverables: ['Art direction and print-ready layouts', 'Brochures, flyers, posters, and reports', 'Production specifications and press checks', 'Paper, finish, and format recommendations', 'Print-ready files with vendor support'],
@@ -93,7 +89,7 @@ export const services: Service[] = [
     ],
   },
   {
-    number: '04', slug: 'marketing-design', title: 'Marketing design',
+    number: '04', slug: 'print-design', title: 'Print Design',
     shortDescription: 'Campaign visuals that turn your message into momentum and measurable attention.',
     outcome: 'A clear campaign people understand quickly and remember longer.', image: sampleImages.marketing, imageAlt: 'Marketing campaign concept boards',
     deliverables: ['Campaign concept and visual direction', 'Key visual for every channel', 'Digital, print, and out-of-home adaptations', 'Launch toolkit for internal teams', 'Clear handoff and rollout guidance'],
@@ -114,6 +110,24 @@ export const services: Service[] = [
       { question: 'Do you work with internal marketing teams?', answer: 'Yes. We can lead the creative or plug into your existing campaign workflow.' },
       { question: 'Can you work to a fixed launch date?', answer: 'We can plan around a launch date when the scope and decisions are agreed early.' },
     ],
+  },
+  {
+    number: '05', slug: 'packaging', title: 'Packaging',
+    shortDescription: 'Packaging that makes the product feel as considered as what is inside.',
+    outcome: 'A shelf-ready product experience people notice and want to pick up.', image: sampleImages.marketing, imageAlt: 'Product packaging design concepts',
+    deliverables: ['Packaging concept and visual direction', 'Front, back, and side panel layouts', 'Print-ready artwork and dieline support', 'Material and finish recommendations', 'Production handoff for your printer'],
+    samples: [{ title: 'Product packaging', caption: 'A clear, ownable package system designed to stand apart on the shelf.', image: sampleImages.marketing }],
+    packages: [{ name: 'Single product', price: 'From KSh 65,000', description: 'A complete packaging concept and production-ready artwork.' }, { name: 'Product range', price: 'Custom', description: 'A flexible packaging system for a growing range.', featured: true }],
+    faqs: [{ question: 'Can you work with an existing brand?', answer: 'Yes. We can translate your existing identity into a packaging system that feels distinct and practical.' }],
+  },
+  {
+    number: '06', slug: 'company-profiles', title: 'Company Profiles',
+    shortDescription: 'Clear, credible company profiles that make your business easier to understand and trust.',
+    outcome: 'A polished profile your team can use to open doors and win confidence.', image: sampleImages.print, imageAlt: 'Company profile document design',
+    deliverables: ['Content structure and editorial direction', 'Company profile layout and art direction', 'Infographics and data visualisation', 'Print and screen-ready versions', 'Reusable proposal and presentation templates'],
+    samples: [{ title: 'Company profile', caption: 'A confident document that turns a complex business into a clear story.', image: sampleImages.print }],
+    packages: [{ name: 'Profile', price: 'From KSh 55,000', description: 'A polished company profile for print and digital use.', featured: true }, { name: 'Profile system', price: 'Custom', description: 'A complete set of documents for sales and business development.' }],
+    faqs: [{ question: 'Can you help with the writing?', answer: 'Yes. We can shape your existing content or help structure the story before design begins.' }],
   },
 ];
 
@@ -142,10 +156,13 @@ export async function getPublicServices(): Promise<Service[]> {
 
     if (!result.docs.length) return services;
 
-    const publishedServices = result.docs.map((doc) => ({
+    const publishedServices = result.docs.map((doc) => {
+      const slug = legacyServiceSlugs[doc.slug] ?? doc.slug;
+      const fallback = services.find((service) => service.slug === slug);
+      return {
       number: doc.number,
-      slug: doc.slug,
-      title: doc.title,
+      slug,
+      title: fallback?.title ?? doc.title,
       shortDescription: doc.shortDescription,
       outcome: doc.outcome,
       image: doc.image || '',
@@ -157,7 +174,8 @@ export async function getPublicServices(): Promise<Service[]> {
       samples: doc.samples?.map(({ title, caption, image }) => ({ title, caption, image })) ?? [],
       packages: doc.packages?.map(({ name, price, description, featured }) => ({ name, price, description, featured: Boolean(featured) })) ?? [],
       faqs: doc.faqs?.map(({ question, answer }) => ({ question, answer })) ?? [],
-    }));
+      };
+    });
 
     const publishedSlugs = new Set(publishedServices.map((service) => service.slug));
     // Keep built-in entries for slugs that editors have not published in the CMS.
