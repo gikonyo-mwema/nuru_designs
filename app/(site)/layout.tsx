@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, Mail, Phone } from 'lucide-react';
 import SiteNav from '@/components/site/SiteNav';
 import '../globals.css';
 import WhatsAppFloat from '@/components/site/WhatsAppFloat';
@@ -12,6 +12,29 @@ export const metadata: Metadata = {
   description: 'Bold brand identities and digital experiences for businesses ready to be remembered.',
   metadataBase: siteUrl,
 };
+
+function BrandIcon({ name }: { name: string }) {
+  if (name === 'Instagram') {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" /></svg>;
+  }
+
+  if (name === 'Facebook') {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 21v-8h2.7l.4-3H14V8.1c0-.9.3-1.6 1.7-1.6h1.6V3.8c-.3 0-1.4-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H8v3h2.6v8H14Z" fill="currentColor" /></svg>;
+  }
+
+  if (name === 'TikTok') {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.3 4c.3 1.8 1.3 3 3.1 3.2v2.7c-1.1-.1-2.1-.4-3.1-1v5.5c0 3-2.1 5.1-5 5.1-2.7 0-4.7-1.8-4.7-4.3 0-2.7 2.2-4.6 5.2-4.6.3 0 .6 0 .9.1v2.7a4 4 0 0 0-.9-.1c-1.3 0-2.4.7-2.4 1.9 0 1 .8 1.7 1.9 1.7 1.3 0 2.2-.9 2.2-2.5V4h2.8Z" fill="currentColor" /></svg>;
+  }
+
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.3v16H5V4Zm1.6-2A2 2 0 1 1 6.6 6 2 2 0 0 1 6.6 2ZM10.8 9h3.1v1.5h.1c.4-.8 1.5-1.8 3.3-1.8 3.5 0 4.1 2.2 4.1 5.1V20h-3.3v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V20h-3.3V9Z" fill="currentColor" /></svg>;
+}
+
+const socialLinks = [
+  { label: 'Instagram', href: process.env.NEXT_PUBLIC_INSTAGRAM_URL },
+  { label: 'Facebook', href: process.env.NEXT_PUBLIC_FACEBOOK_URL },
+  { label: 'LinkedIn', href: process.env.NEXT_PUBLIC_LINKEDIN_URL },
+  { label: 'TikTok', href: process.env.NEXT_PUBLIC_TIKTOK_URL },
+];
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const content = await getPublicSiteContent();
@@ -32,6 +55,15 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
               <p>{content.footerStudioDescription}</p>
             </div>
             <div className="footer-column">
+              <h2>Quick links</h2>
+              <ul className="footer-links">
+                <li><Link href="/">Home</Link></li>
+                <li><Link href="/work">Work</Link></li>
+                <li><Link href="/about">About us</Link></li>
+                <li><Link href="/contact">Contact</Link></li>
+              </ul>
+            </div>
+            <div className="footer-column">
               <h2>Services</h2>
               <ul className="footer-links">
                 <li><Link href="/services/brand-identity-and-logo-design">Branding</Link></li>
@@ -42,32 +74,32 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
                 <li><Link href="/services/print-design">Company Profiles</Link></li>
               </ul>
             </div>
-            <div className="footer-column">
-              <h2>Work</h2>
-              <ul className="footer-links">
-                <li><Link href="/work?category=brand-identity">Branding</Link></li>
-                <li><Link href="/work?category=social-media">Social Media</Link></li>
-                <li><Link href="/work">Print</Link></li>
-                <li><Link href="/work?category=campaigns">Campaigns</Link></li>
-              </ul>
-            </div>
-            <div className="footer-column">
+            <div className="footer-column footer-contact-column">
               <h2>Contact</h2>
-              <ul className="footer-links">
-                <li><a href="https://wa.me/254180693218" target="_blank" rel="noreferrer">WhatsApp</a></li>
-                <li><a href={`mailto:${content.contactEmail}`}>Email</a></li>
-                <li><a href={`tel:${content.contactPhoneLink}`}>Phone</a></li>
-                <li><span>Nairobi, Kenya</span></li>
-              </ul>
-            </div>
-            <div className="footer-column">
-              <h2>Social</h2>
-              <ul className="footer-links">
-                <li><span>Instagram</span></li>
-                <li><span>Facebook</span></li>
-                <li><span>TikTok</span></li>
-                <li><span>LinkedIn</span></li>
-              </ul>
+              <p>Have a question or a project in mind?</p>
+              <div className="footer-contact-links">
+                <a className="footer-contact-link" href={`tel:${content.contactPhoneLink}`}>
+                  <span className="footer-contact-icon"><Phone size={16} strokeWidth={1.8} /></span>
+                  <span>{content.contactPhoneDisplay}</span>
+                </a>
+                <a className="footer-contact-link" href={`mailto:${content.contactEmail}`}>
+                  <span className="footer-contact-icon"><Mail size={16} strokeWidth={1.8} /></span>
+                  <span>{content.contactEmail}</span>
+                </a>
+              </div>
+              <div className="footer-socials" aria-label="Social media links">
+                {socialLinks.map(({ label, href }) => (
+                  href ? (
+                    <a className="footer-social-link" href={href} key={label} target="_blank" rel="noreferrer" aria-label={label}>
+                      <span className="footer-social-icon"><BrandIcon name={label} /></span>
+                    </a>
+                  ) : (
+                    <span className="footer-social-link footer-social-link-disabled" key={label} aria-label={label}>
+                      <span className="footer-social-icon-disabled"><BrandIcon name={label} /></span>
+                    </span>
+                  )
+                ))}
+              </div>
             </div>
           </div>
           <div className="site-container footer-bottom">
