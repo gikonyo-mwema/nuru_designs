@@ -53,6 +53,19 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
             <div className="footer-column footer-brand-column">
               <Link href="/" className="brand-mark footer-brand">Nuru<span>Designs</span></Link>
               <p>{content.footerStudioDescription}</p>
+              <div className="footer-socials" aria-label="Social media links">
+                {socialLinks.map(({ label, href }) => (
+                  href ? (
+                    <a className="footer-social-link" href={href} key={label} target="_blank" rel="noreferrer" aria-label={label}>
+                      <span className="footer-social-icon"><BrandIcon name={label} /></span>
+                    </a>
+                  ) : (
+                    <span className="footer-social-link footer-social-link-disabled" key={label} aria-label={label}>
+                      <span className="footer-social-icon-disabled"><BrandIcon name={label} /></span>
+                    </span>
+                  )
+                ))}
+              </div>
             </div>
             <div className="footer-column">
               <h2>Quick links</h2>
@@ -86,19 +99,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
                   <span className="footer-contact-icon"><Mail size={16} strokeWidth={1.8} /></span>
                   <span>{content.contactEmail}</span>
                 </a>
-              </div>
-              <div className="footer-socials" aria-label="Social media links">
-                {socialLinks.map(({ label, href }) => (
-                  href ? (
-                    <a className="footer-social-link" href={href} key={label} target="_blank" rel="noreferrer" aria-label={label}>
-                      <span className="footer-social-icon"><BrandIcon name={label} /></span>
-                    </a>
-                  ) : (
-                    <span className="footer-social-link footer-social-link-disabled" key={label} aria-label={label}>
-                      <span className="footer-social-icon-disabled"><BrandIcon name={label} /></span>
-                    </span>
-                  )
-                ))}
               </div>
             </div>
           </div>
