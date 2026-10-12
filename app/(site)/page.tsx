@@ -40,7 +40,7 @@ async function getFeaturedProjects(): Promise<Project[]> {
         limit: 3,
       }),
       new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Featured project lookup timed out')), 1500);
+        setTimeout(() => reject(new Error('Featured project lookup timed out')), 15000);
       }),
     ]);
 
