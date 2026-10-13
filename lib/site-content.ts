@@ -9,10 +9,10 @@ export type PublicTeamMember = Pick<Team, 'id' | 'name' | 'role' | 'bio'> & {
 // These defaults keep public pages populated when CMS data is absent or unavailable.
 export const fallbackSiteContent: SiteContent = {
   id: 0,
-  homeHeroLead: 'Make your brand',
-  homeHeroEmphasis: 'impossible',
-  homeHeroEnd: 'to overlook.',
-  homeHeroIntro: 'Branding, social media graphics, marketing campaigns, and print design for businesses in Kenya.',
+  homeHeroLead: 'Design that makes',
+  homeHeroEmphasis: 'your business',
+  homeHeroEnd: 'stand out.',
+  homeHeroIntro: 'From scroll-stopping social media graphics to menus, promotional posters, branding, and company profiles, Nuru Designs helps Kenyan businesses present themselves professionally and attract attention.',
   trustSectors: ['Restaurants', 'Startups', 'Retail', 'Events', 'NGOs', 'Churches'].map((label) => ({ label })),
   founderEyebrow: 'A note from the studio',
   founderHeading: 'Design is better when it feels human.',

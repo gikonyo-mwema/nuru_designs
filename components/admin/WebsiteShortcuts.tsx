@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import {
   BriefcaseBusiness,
+  ExternalLink,
   FileQuestion,
   Globe2,
   Image as ImageIcon,
   Inbox,
+  LayoutDashboard,
   Palette,
   UserRound,
   UsersRound,
@@ -16,6 +18,10 @@ export default function WebsiteShortcuts() {
     <aside className={styles.panel} aria-label="Dashboard shortcuts">
       <p className={styles.eyebrow}>Studio desk</p>
       <nav className={styles.nav}>
+        <p className={styles.groupLabel}>Workspace</p>
+        <Link className={styles.link} href="/admin"><LayoutDashboard aria-hidden="true" /><span>Dashboard</span></Link>
+        <Link className={styles.link} href="/" target="_blank" rel="noreferrer"><ExternalLink aria-hidden="true" /><span>Public website</span></Link>
+
         <p className={styles.groupLabel}>Website</p>
         <Link className={styles.link} href="/admin/globals/site-content"><Globe2 aria-hidden="true" /><span>Site content</span></Link>
         <Link className={styles.link} href="/admin/collections/services"><Palette aria-hidden="true" /><span>Services</span></Link>

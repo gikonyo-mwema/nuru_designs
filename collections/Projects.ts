@@ -103,6 +103,12 @@ const Projects: CollectionConfig = {
       type: 'relationship',
       relationTo: 'media',
       required: true,
+      admin: {
+        components: {
+          Field: '/components/admin/MediaRelationshipField#default',
+        },
+        description: 'Choose the main image for this project. The picker includes thumbnails and a preview.',
+      },
     },
     {
       name: 'gallery',
@@ -113,6 +119,11 @@ const Projects: CollectionConfig = {
           type: 'relationship',
           relationTo: 'media',
           required: true,
+          admin: {
+            components: {
+              Field: '/components/admin/MediaRelationshipField#default',
+            },
+          },
         },
         {
           name: 'caption',

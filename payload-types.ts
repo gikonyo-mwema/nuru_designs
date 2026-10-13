@@ -209,6 +209,9 @@ export interface Project {
     };
     [k: string]: unknown;
   };
+  /**
+   * Choose the main image for this project. The picker includes thumbnails and a preview.
+   */
   heroImage: number | Media;
   gallery?:
     | {

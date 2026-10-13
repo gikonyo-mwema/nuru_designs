@@ -1,9 +1,8 @@
-import { getPayload } from 'payload';
 import type { Metadata } from 'next';
 
-import config from '@payload-config';
 import WorkArchive from '@/components/work/WorkArchive';
 import { projectCategories } from '@/lib/project-categories';
+import { getPayloadClient } from '@/lib/payload-client';
 
 export const metadata: Metadata = {
   title: 'Selected Work',
@@ -23,10 +22,10 @@ type Project = {
 };
 
 async function getProjects(): Promise<Project[]> {
-  if (!process.env.DATABASE_URI) return [];
+  const payload = await getPayloadClient();
+  if (!payload) return [];
 
   try {
-    const payload = await getPayload({ config });
     const result = await Promise.race([
       payload.find({
         collection: 'projects',
@@ -37,7 +36,7 @@ async function getProjects(): Promise<Project[]> {
         limit: 100,
       }),
       new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Project database lookup timed out')), 1500);
+        setTimeout(() => reject(new Error('Project database lookup timed out')), 15000);
       }),
     ]);
 

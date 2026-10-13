@@ -17,7 +17,7 @@ type Project = {
   slug: string;
   description?: string;
   category?: string;
-  heroImage?: string | { url?: string; alt?: string };
+  heroImage?: string | { url?: string; alt?: string; width?: number | null; height?: number | null; focalX?: number | null; focalY?: number | null };
 };
 
 const serviceIcons = { branding: Palette, 'social-media': Share2, 'flyers-posters': Image, 'print-design': BookOpen, packaging: Package, 'company-profiles': Building2 } as const;
@@ -37,7 +37,7 @@ async function getFeaturedProjects(): Promise<Project[]> {
           ],
         },
         sort: 'sortOrder,-publishedAt',
-        limit: 3,
+        limit: 8,
       }),
       new Promise<never>((_, reject) => {
         setTimeout(() => reject(new Error('Featured project lookup timed out')), 15000);
@@ -75,7 +75,7 @@ export default async function Home() {
         />
         <div className="site-container hero-content">
           <div className="hero-copy">
-            <p className="eyebrow reveal">Independent design studio</p>
+            <p className="eyebrow reveal">Design studio</p>
             <h1 className="hero-title reveal reveal-delay-1">
               {content.homeHeroLead} <em>{content.homeHeroEmphasis}</em> {content.homeHeroEnd}
             </h1>
@@ -83,9 +83,10 @@ export default async function Home() {
               {content.homeHeroIntro}
             </p>
             <div className="hero-actions reveal reveal-delay-3">
-              <Link href="/contact" className="button button-light">Start a project <span aria-hidden="true">↗</span></Link>
-              <Link href="/work" className="text-link">Explore selected work <span aria-hidden="true">→</span></Link>
+              <a href="https://wa.me/254180693218" className="button button-light" target="_blank" rel="noreferrer">Chat on WhatsApp <span aria-hidden="true">↗</span></a>
+              <Link href="/work" className="text-link">Explore Our Work <span aria-hidden="true">→</span></Link>
             </div>
+            <p className="hero-supporting-line reveal reveal-delay-3">Custom designs for businesses, startups, restaurants, events, and growing brands across Kenya.</p>
           </div>
         </div>
       </section>
