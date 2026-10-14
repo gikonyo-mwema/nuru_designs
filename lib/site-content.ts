@@ -9,9 +9,9 @@ export type PublicTeamMember = Pick<Team, 'id' | 'name' | 'role' | 'bio'> & {
 // These defaults keep public pages populated when CMS data is absent or unavailable.
 export const fallbackSiteContent: SiteContent = {
   id: 0,
-  homeHeroLead: 'Design that makes',
-  homeHeroEmphasis: 'your business',
-  homeHeroEnd: 'stand out.',
+  homeHeroLead: 'Stand out',
+  homeHeroEmphasis: 'with intention.',
+  homeHeroEnd: '',
   homeHeroIntro: 'From scroll-stopping social media graphics to menus, promotional posters, branding, and company profiles, Nuru Designs helps Kenyan businesses present themselves professionally and attract attention.',
   trustSectors: ['Restaurants', 'Startups', 'Retail', 'Events', 'NGOs', 'Churches'].map((label) => ({ label })),
   founderEyebrow: 'A note from the studio',
@@ -84,7 +84,21 @@ export async function getPublicSiteContent(): Promise<SiteContent> {
       Object.entries(doc).filter(([, value]) => value !== null && value !== undefined),
     );
 
-    return { ...fallbackSiteContent, ...definedFields };
+    const storedHeroHeading = [doc.homeHeroLead, doc.homeHeroEmphasis, doc.homeHeroEnd]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    const isLegacyHeroHeading = storedHeroHeading.includes('impossible to overlook');
+
+    return {
+      ...fallbackSiteContent,
+      ...definedFields,
+      ...(isLegacyHeroHeading ? {
+        homeHeroLead: fallbackSiteContent.homeHeroLead,
+        homeHeroEmphasis: fallbackSiteContent.homeHeroEmphasis,
+        homeHeroEnd: fallbackSiteContent.homeHeroEnd,
+      } : {}),
+    };
   } catch {
     return fallbackSiteContent;
   }

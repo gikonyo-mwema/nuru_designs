@@ -2,16 +2,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPayload } from 'payload';
 import { RichText } from '@payloadcms/richtext-lexical/react';
 import { cache } from 'react';
 
-import config from '@payload-config';
+import { getPayloadClient } from '@/lib/payload-client';
+import { toProjectSlug } from '@/lib/project-slugs';
 import { siteUrl } from '@/lib/site-url';
 
 type Media = {
   url?: string;
   alt?: string;
+  width?: number | null;
+  height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
 };
@@ -28,23 +30,21 @@ type Project = {
 };
 
 const getProject = cache(async (slug: string): Promise<Project | null> => {
-  if (!process.env.DATABASE_URI) {
-    return null;
-  }
+  const payload = await getPayloadClient();
+  if (!payload) return null;
 
-  const payload = await getPayload({ config });
   const result = await payload.find({
     collection: 'projects',
-    where: {
-      and: [
-        { slug: { equals: slug } },
-        { status: { equals: 'published' } },
-      ],
-    },
-    limit: 1,
+    where: { status: { equals: 'published' } },
+    limit: 100,
   });
 
-  return (result.docs[0] as unknown as Project | undefined) ?? null;
+  const project = result.docs.find((doc) => {
+    const projectSlug = typeof doc.slug === 'string' ? doc.slug : '';
+    return projectSlug === slug || toProjectSlug(projectSlug) === toProjectSlug(slug);
+  });
+
+  return (project as unknown as Project | undefined) ?? null;
 });
 
 export async function generateMetadata({
@@ -113,12 +113,12 @@ export default async function ProjectPage({
       </header>
 
       {heroImage?.url ? (
-        <div className="project-detail-hero">
+        <div className="project-detail-hero" style={heroImage.width && heroImage.height ? { aspectRatio: `${heroImage.width} / ${heroImage.height}` } : undefined}>
           <Image
             src={heroImage.url}
             alt={heroImage.alt || project.title}
             fill
-            className="object-cover"
+            className="object-contain"
             style={{ objectPosition: heroImage.focalX != null && heroImage.focalY != null ? `${heroImage.focalX}% ${heroImage.focalY}%` : undefined }}
             priority
           />
@@ -133,12 +133,12 @@ export default async function ProjectPage({
             const media = typeof image === 'object' ? image : null;
             return media?.url ? (
               <figure key={`${media.url}-${index}`}>
-                <div className="project-detail-gallery-image">
+                <div className="project-detail-gallery-image" style={media.width && media.height ? { aspectRatio: `${media.width} / ${media.height}` } : undefined}>
                   <Image
                     src={media.url}
                     alt={media.alt || caption || project.title}
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     style={{ objectPosition: media.focalX != null && media.focalY != null ? `${media.focalX}% ${media.focalY}%` : undefined }}
                   />
                 </div>

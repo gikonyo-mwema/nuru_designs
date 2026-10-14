@@ -152,13 +152,13 @@ export async function POST(request: Request) {
     !name || name.length > 120
     || !email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     || business.length > 160
-    || whatsapp.length > 40
+    || !whatsapp || whatsapp.length > 40
     || service.length > 80
     || (service !== '' && !contactServiceOptions.some(({ value }) => value === service))
     || !message || message.length > 5000
   ) {
     return NextResponse.json(
-      { error: 'Enter a name (up to 120 characters), a valid email, and a message (up to 5,000 characters).' },
+      { error: 'Enter a name, valid email, phone number, and message (up to 5,000 characters).' },
       { status: 400 },
     );
   }

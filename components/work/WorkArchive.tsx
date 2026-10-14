@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { toProjectSlug } from '@/lib/project-slugs';
 
 type Project = {
   id: string;
@@ -13,7 +14,7 @@ type Project = {
   client?: string;
   year?: number;
   tags?: string[];
-  heroImage: string | { url?: string; alt?: string; focalX?: number | null; focalY?: number | null };
+  heroImage: string | { url?: string; alt?: string; width?: number | null; height?: number | null; focalX?: number | null; focalY?: number | null };
 };
 
 type Category = readonly [string, string];
@@ -87,10 +88,12 @@ export default function WorkArchive({
         <div className="work-grid site-container">
           {visibleProjects.map((project) => {
             const image = typeof project.heroImage === 'object' ? project.heroImage : null;
+            const imageRatio = image?.width && image.height ? image.width / image.height : 1;
+            const imageOrientation = imageRatio >= 1.35 ? 'landscape' : imageRatio <= 0.8 ? 'portrait' : 'square';
             return (
-              <Link key={project.id} href={`/work/${project.slug}`} className="work-card">
-                <div className="work-card-image">
-                  {image?.url ? <Image src={image.url} alt={image.alt || project.title} fill className="object-cover" style={{ objectPosition: image.focalX != null && image.focalY != null ? `${image.focalX}% ${image.focalY}%` : undefined }} /> : <span aria-hidden="true">N</span>}
+              <Link key={project.id} href={`/work/${toProjectSlug(project.slug)}`} className={`work-card work-card-${imageOrientation}`}>
+                <div className="work-card-image" style={imageRatio !== 1 ? { aspectRatio: `${image?.width || 1} / ${image?.height || 1}` } : undefined}>
+                  {image?.url ? <Image src={image.url} alt={image.alt || project.title} fill className="object-contain" style={{ objectPosition: image.focalX != null && image.focalY != null ? `${image.focalX}% ${image.focalY}%` : undefined }} /> : <span aria-hidden="true">N</span>}
                 </div>
                 <div className="work-card-meta"><h2>{project.title}</h2><span>{project.category ? categories.find(([value]) => value === project.category)?.[1] : 'Design project'}</span></div>
                 <p>{project.client || project.description}</p>

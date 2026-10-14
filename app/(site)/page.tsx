@@ -107,7 +107,7 @@ export default async function Home() {
             {services.map((service) => (
               <Link href={`/services/${service.slug}`} className="service-card service-card-plain" key={service.slug}>
                 <div className="service-card-icon" aria-hidden="true">{(() => { const Icon = serviceIcons[service.slug as keyof typeof serviceIcons] ?? Palette; return <Icon />; })()}</div>
-                <div className="service-card-content"><h3>{service.title}</h3><p>{service.shortDescription}</p>{service.packages[0]?.price ? <span className="homepage-service-price">Packages {service.packages[0].price}</span> : null}<span className="service-card-arrow" aria-hidden="true">→</span></div>
+                <div className="service-card-content"><h3>{service.title}</h3><p>{service.shortDescription}</p><span className="service-card-arrow" aria-hidden="true">→</span></div>
               </Link>
             ))}
           </div>

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { projectCategories, type ProjectCategory } from '@/lib/project-categories';
+import { toProjectSlug } from '@/lib/project-slugs';
 
 type Project = {
   id: string;
@@ -52,7 +53,7 @@ export default function SelectedWorkGallery({ projects }: { projects: Project[] 
             const imageOrientation = imageRatio >= 1.35 ? 'landscape' : imageRatio <= 0.8 ? 'portrait' : 'square';
 
             return (
-              <Link href={`/work/${project.slug}`} key={project.id} className={`project-card project-card-${imageOrientation}`} aria-label={`View ${project.title}`}>
+              <Link href={`/work/${toProjectSlug(project.slug)}`} key={project.id} className={`project-card project-card-${imageOrientation}`} aria-label={`View ${project.title}`}>
                 <div className="project-image" style={imageRatio !== 1 ? { aspectRatio: `${image?.width || 1} / ${image?.height || 1}` } : undefined}>
                   {image?.url ? <Image src={image.url} alt={image.alt || project.title} fill className="object-contain" style={{ objectPosition: image.focalX != null && image.focalY != null ? `${image.focalX}% ${image.focalY}%` : undefined }} /> : <div className="project-placeholder">N</div>}
                   <span className="project-overlay">
