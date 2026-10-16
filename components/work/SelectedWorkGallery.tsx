@@ -51,11 +51,12 @@ export default function SelectedWorkGallery({ projects }: { projects: Project[] 
             const image = typeof project.heroImage === 'object' ? project.heroImage : null;
             const imageRatio = image?.width && image?.height ? image.width / image.height : 1;
             const imageOrientation = imageRatio >= 1.35 ? 'landscape' : imageRatio <= 0.8 ? 'portrait' : 'square';
+            const isMenu = project.category === 'menus';
 
             return (
-              <Link href={`/work/${toProjectSlug(project.slug)}`} key={project.id} className={`project-card project-card-${imageOrientation}`} aria-label={`View ${project.title}`}>
+              <Link href={`/work/${toProjectSlug(project.slug)}`} key={project.id} className={`project-card project-card-${imageOrientation}${isMenu ? ' project-card-category-menus' : ''}`} aria-label={`View ${project.title}`}>
                 <div className="project-image" style={imageRatio !== 1 ? { aspectRatio: `${image?.width || 1} / ${image?.height || 1}` } : undefined}>
-                  {image?.url ? <Image src={image.url} alt={image.alt || project.title} fill className="object-contain" style={{ objectPosition: image.focalX != null && image.focalY != null ? `${image.focalX}% ${image.focalY}%` : undefined }} /> : <div className="project-placeholder">N</div>}
+                  {image?.url ? <Image src={image.url} alt={image.alt || project.title} fill className="object-contain" style={{ objectPosition: isMenu ? 'top center' : image.focalX != null && image.focalY != null ? `${image.focalX}% ${image.focalY}%` : undefined }} /> : <div className="project-placeholder">N</div>}
                   <span className="project-overlay">
                     <span className="project-overlay-type">{categoryLabels[project.category || ''] || 'Design project'}</span>
                     <span className="project-overlay-link">View more <span aria-hidden="true">↗</span></span>

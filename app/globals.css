@@ -70,6 +70,7 @@ a { color: inherit; text-decoration: none; }
 .project-card-landscape .project-image { aspect-ratio: 2 / 1; }
 .project-card-portrait .project-image { aspect-ratio: 4 / 5; }
 .project-card-square .project-image { aspect-ratio: 1 / 1; }
+.project-card-category-menus { grid-column: span 1; }
 
 .work-card-landscape { grid-column: span 2; }
 .work-card-landscape .work-card-image { aspect-ratio: 2 / 1; }
