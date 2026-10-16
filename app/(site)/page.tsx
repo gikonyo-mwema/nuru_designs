@@ -100,7 +100,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="section section-tint">
+      <section className="section section-tint homepage-services-section">
         <div className="site-container services-section">
           <div className="services-intro-centered"><p className="eyebrow">What we do</p><h2>Clarity, character, and craft.</h2><p className="section-intro">From first thought to final pixel, we help ambitious businesses show up with confidence.</p></div>
           <div className="services-cards">
@@ -114,7 +114,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="section site-container" id="work">
+      <section className="section site-container homepage-work-section" id="work">
         <div className="section-heading">
           <div><p className="eyebrow">Selected work</p><h2>Good design earns attention.</h2></div>
           <Link href="/work" className="text-link">View all work <span aria-hidden="true">↗</span></Link>
