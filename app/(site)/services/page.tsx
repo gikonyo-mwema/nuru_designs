@@ -10,21 +10,21 @@ export const metadata: Metadata = {
   description: 'Brand identity, social media, print, and marketing design for ambitious businesses.',
 };
 
-const serviceIcons = { branding: Palette, 'social-media': Share2, 'flyers-posters': Image, 'print-design': BookOpen, packaging: Package, 'company-profiles': Building2 } as const;
+const serviceIcons = { 'social-media-posts-banners': Share2, 'event-posters-flyers': Image, 'menus-cards-stationery': BookOpen, 'logo-brand-identity': Palette, 'product-labels-packaging': Package, 'company-profiles': Building2 } as const;
 const serviceWorkCategories = {
-  branding: 'brand-identity',
-  'social-media': 'social-media',
-  'flyers-posters': 'all',
-  'print-design': 'all',
-  packaging: 'all',
+  'social-media-posts-banners': 'social-media',
+  'event-posters-flyers': 'posters',
+  'menus-cards-stationery': 'menus',
+  'logo-brand-identity': 'brand-identity',
+  'product-labels-packaging': 'all',
   'company-profiles': 'all',
 } satisfies Record<string, ProjectCategory | 'all'>;
 const serviceSignals = {
-  branding: { bestFor: 'Businesses rebranding or launching', timeline: '3–5 weeks', startingFrom: 'KSh 85,000' },
-  'social-media': { bestFor: 'Brands ready to show up consistently online', timeline: '2–4 weeks', startingFrom: 'KSh 35,000' },
-  'flyers-posters': { bestFor: 'Teams promoting an event, offer, or campaign', timeline: '1–3 weeks', startingFrom: 'KSh 25,000' },
-  'print-design': { bestFor: 'Teams bringing a brand into the real world', timeline: '1–3 weeks', startingFrom: 'KSh 25,000' },
-  packaging: { bestFor: 'Product businesses ready to stand out on the shelf', timeline: '2–4 weeks', startingFrom: 'KSh 65,000' },
+  'social-media-posts-banners': { bestFor: 'Brands ready to show up consistently online', timeline: '2–4 weeks', startingFrom: 'KSh 35,000' },
+  'event-posters-flyers': { bestFor: 'Teams promoting an event, offer, or campaign', timeline: '1–3 weeks', startingFrom: 'KSh 25,000' },
+  'menus-cards-stationery': { bestFor: 'Businesses creating memorable customer touchpoints', timeline: '1–3 weeks', startingFrom: 'KSh 30,000' },
+  'logo-brand-identity': { bestFor: 'Businesses launching or sharpening their identity', timeline: '3–5 weeks', startingFrom: 'KSh 85,000' },
+  'product-labels-packaging': { bestFor: 'Product businesses ready to stand out on the shelf', timeline: '2–4 weeks', startingFrom: 'KSh 65,000' },
   'company-profiles': { bestFor: 'Businesses that need to communicate their value clearly', timeline: '2–4 weeks', startingFrom: 'KSh 55,000' },
 } as const;
 const projectSteps = [

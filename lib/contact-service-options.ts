@@ -1,10 +1,9 @@
 export const contactServiceOptions = [
-  { value: 'branding', label: 'Logo or branding' },
-  { value: 'social-media', label: 'Social media graphics' },
-  { value: 'marketing-design', label: 'Marketing campaigns' },
-  { value: 'flyer-poster', label: 'Flyer or poster' },
-  { value: 'company-profile', label: 'Company profile' },
-  { value: 'packaging', label: 'Packaging' },
-  { value: 'event-graphics', label: 'Event graphics' },
+  { value: 'social-media-posts-banners', label: 'Social Media Posts & Banners' },
+  { value: 'event-posters-flyers', label: 'Event Posters & Flyers' },
+  { value: 'menus-cards-stationery', label: 'Menus, Cards & Stationery' },
+  { value: 'logo-brand-identity', label: 'Logo & Brand Identity' },
+  { value: 'product-labels-packaging', label: 'Product Labels & Packaging' },
+  { value: 'company-profiles', label: 'Company Profiles' },
   { value: 'other', label: 'Something else' },
 ] as const;

@@ -20,7 +20,7 @@ type Project = {
   heroImage?: string | { url?: string; alt?: string; width?: number | null; height?: number | null; focalX?: number | null; focalY?: number | null };
 };
 
-const serviceIcons = { branding: Palette, 'social-media': Share2, 'flyers-posters': Image, 'print-design': BookOpen, packaging: Package, 'company-profiles': Building2 } as const;
+const serviceIcons = { 'social-media-posts-banners': Share2, 'event-posters-flyers': Image, 'menus-cards-stationery': BookOpen, 'logo-brand-identity': Palette, 'product-labels-packaging': Package, 'company-profiles': Building2 } as const;
 
 async function getFeaturedProjects(): Promise<Project[]> {
   const payload = await getPayloadClient();

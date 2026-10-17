@@ -12,12 +12,12 @@ const phoneLink = '+254180693218';
 const budgetOptions = ['Under KSh 25,000', 'KSh 25,000 - KSh 50,000', 'KSh 50,000 - KSh 100,000', 'KSh 100,000 - KSh 250,000', 'Over KSh 250,000', "I'm not sure yet"];
 const timelineOptions = ['ASAP (within 2 weeks)', 'Within a month', 'Within 2-3 months', 'Just exploring for now'];
 const interestOptions = [
-  { value: 'branding', label: 'Branding & Identity' },
-  { value: 'social-media', label: 'Social Media Graphics' },
-  { value: 'flyer-poster', label: 'Print Design (Flyers, Posters)' },
-  { value: 'packaging', label: 'Packaging Design' },
-  { value: 'company-profile', label: 'Company Profile' },
-  { value: 'marketing-design', label: 'Campaign Design' },
+  { value: 'social-media-posts-banners', label: 'Social Media Posts & Banners' },
+  { value: 'event-posters-flyers', label: 'Event Posters & Flyers' },
+  { value: 'menus-cards-stationery', label: 'Menus, Cards & Stationery' },
+  { value: 'logo-brand-identity', label: 'Logo & Brand Identity' },
+  { value: 'product-labels-packaging', label: 'Product Labels & Packaging' },
+  { value: 'company-profiles', label: 'Company Profiles' },
   { value: 'other', label: 'Not sure yet' },
 ];
 const faqs = [

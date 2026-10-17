@@ -22,18 +22,11 @@ const sampleImages = {
   marketing: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=1200&auto=format&fit=crop&q=85',
 };
 
-const legacyServiceSlugs: Record<string, string> = {
-  'brand-identity-and-logo-design': 'branding',
-  'social-media-graphics': 'social-media',
-  'print-design': 'flyers-posters',
-  'marketing-design': 'print-design',
-};
-
 export const services: Service[] = [
   {
-    number: '01', slug: 'branding', title: 'Branding',
-    shortDescription: 'Distinctive identity systems that turn a good business into a memorable brand.',
-    outcome: 'A clear, confident brand people can recognize at a glance.', image: sampleImages.identity, imageAlt: 'Brand identity stationery and logo sketches',
+    number: '01', slug: 'social-media-posts-banners', title: 'Social Media Posts & Banners',
+    shortDescription: 'Scroll-stopping graphics that make every post feel unmistakably yours.',
+    outcome: 'A social presence people recognize, remember, and want to follow.', image: sampleImages.social, imageAlt: 'Colorful social media campaign mockups',
     deliverables: ['Logo suite and usage guidance', 'Color palette and typography system', 'Brand guidelines PDF', 'Business card, letterhead, and social kit', 'Launch-ready brand assets'],
     samples: [{ title: 'Identity system', caption: 'A flexible visual language built to move from packaging to digital.', image: sampleImages.identity }],
     packages: [
@@ -43,7 +36,7 @@ export const services: Service[] = [
     faqs: [{ question: 'Can you refresh an existing brand?', answer: 'Yes. We can sharpen what is already working or create a fuller identity system around it.' }],
   },
   {
-    number: '02', slug: 'social-media', title: 'Social Media',
+    number: '02', slug: 'event-posters-flyers', title: 'Event Posters & Flyers',
     shortDescription: 'Scroll-stopping graphics that make every post feel unmistakably yours.',
     outcome: 'A social presence people recognize, remember, and want to follow.', image: sampleImages.social, imageAlt: 'Colorful social media campaign mockups',
     deliverables: ['12 custom post and story templates', 'Campaign art direction and content themes', 'Editable files for your team', 'Platform-ready exports for every format', 'A simple visual guide for consistency'],
@@ -66,7 +59,7 @@ export const services: Service[] = [
     ],
   },
   {
-    number: '03', slug: 'flyers-posters', title: 'Flyers & Posters',
+    number: '03', slug: 'menus-cards-stationery', title: 'Menus, Cards & Stationery',
     shortDescription: 'Print pieces with enough presence to earn attention away from the screen.',
     outcome: 'Physical brand moments that people notice, keep, and remember.', image: sampleImages.print, imageAlt: 'Printed editorial design and publications',
     deliverables: ['Art direction and print-ready layouts', 'Brochures, flyers, posters, and reports', 'Production specifications and press checks', 'Paper, finish, and format recommendations', 'Print-ready files with vendor support'],
@@ -89,7 +82,7 @@ export const services: Service[] = [
     ],
   },
   {
-    number: '04', slug: 'print-design', title: 'Print Design',
+    number: '04', slug: 'logo-brand-identity', title: 'Logo & Brand Identity',
     shortDescription: 'Campaign visuals that turn your message into momentum and measurable attention.',
     outcome: 'A clear campaign people understand quickly and remember longer.', image: sampleImages.marketing, imageAlt: 'Marketing campaign concept boards',
     deliverables: ['Campaign concept and visual direction', 'Key visual for every channel', 'Digital, print, and out-of-home adaptations', 'Launch toolkit for internal teams', 'Clear handoff and rollout guidance'],
@@ -112,7 +105,7 @@ export const services: Service[] = [
     ],
   },
   {
-    number: '05', slug: 'packaging', title: 'Packaging',
+    number: '05', slug: 'product-labels-packaging', title: 'Product Labels & Packaging',
     shortDescription: 'Packaging that makes the product feel as considered as what is inside.',
     outcome: 'A shelf-ready product experience people notice and want to pick up.', image: sampleImages.marketing, imageAlt: 'Product packaging design concepts',
     deliverables: ['Packaging concept and visual direction', 'Front, back, and side panel layouts', 'Print-ready artwork and dieline support', 'Material and finish recommendations', 'Production handoff for your printer'],
@@ -157,11 +150,10 @@ export async function getPublicServices(): Promise<Service[]> {
     if (!result.docs.length) return services;
 
     const publishedServices = result.docs.map((doc) => {
-      const slug = legacyServiceSlugs[doc.slug] ?? doc.slug;
-      const fallback = services.find((service) => service.slug === slug);
+      const fallback = services.find((service) => service.slug === doc.slug);
       return {
       number: doc.number,
-      slug,
+      slug: doc.slug,
       title: fallback?.title ?? doc.title,
       shortDescription: doc.shortDescription,
       outcome: doc.outcome,
